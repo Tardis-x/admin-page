@@ -1,0 +1,9 @@
+{
+  "name": "tardis-x",
+  "description": "Tardis X: WEB Part",
+  "main": "index.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.6.1",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.22"
+  }
+}
