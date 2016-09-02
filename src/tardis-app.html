@@ -1,13 +1,19 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="tardis-login.html">
 
 <dom-module id="tardis-app">
   <template>
@@ -42,25 +48,52 @@
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>Tardis X</div>
             <paper-icon-button icon="add">+</paper-icon-button>
+            <paper-icon-button
+              icon="[[computeLockIcon(signedIn)]]"
+              disabled="[[!signedIn]]"
+              on-tap="signOut">
+            </paper-icon-button>
           </app-toolbar>
         </app-header>
 
       </app-header-layout>
     </app-drawer-layout>
+
+    <tardis-login
+      on-sign-in="signIn"
+      signed-in="[[signedIn]]"
+      disabled="[[!online]]">
+    </tardis-login>
+
+    <firebase-auth
+      id="auth"
+      app-name="tardis"
+      provider="google"
+      signed-in="{{signedIn}}"
+      user="{{user}}">
+    </firebase-auth>
   </template>
 
   <script>
     Polymer({
-
       is: 'tardis-app',
-
       properties: {
-        prop1: {
-          type: String,
-          value: 'tardis-app',
-        },
+
       },
 
+      signIn: function() {
+        this.$.auth.signInWithPopup();
+      },
+
+      computeLockIcon: function(signedIn) {
+        return signedIn ? 'lock-open' : 'lock';
+      },
+
+      signOut: function() {
+        if (this.$.auth) {
+          this.$.auth.signOut();
+        }
+      }
     });
   </script>
 </dom-module>
