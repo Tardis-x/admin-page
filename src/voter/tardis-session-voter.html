@@ -1,0 +1,111 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../../bower_components/fullscreen-api/fullscreen-icon-button.html">
+
+<dom-module id="tardis-session-voter">
+  <template>
+    <style include="iron-flex">
+      :host {
+        display: block;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding-top: 64px;
+      }
+
+      #voterView, #voterView > div {
+        height: 100%;
+        width: 100%;
+      }
+
+      #voterView fullscreen-icon-button {
+        position: absolute;
+      }
+
+      paper-button {
+        width: 24vw;
+        height: 24vw;
+      }
+
+      @media only screen and (max-width: 1200px) {
+        paper-button {
+          width: 24vw;
+          height: 24vw;
+        }
+      }
+
+      @media only screen and (max-width: 979px) {
+        paper-button {
+          width: 24vw;
+          height: 24vw;
+        }
+      }
+
+      @media only screen and (max-width: 767px) {
+        paper-button {
+          width: 33vw;
+          height: 33vw;
+        }
+      }
+
+      @media only screen and (max-width: 480px) {
+        paper-button {
+          width: 30vw;
+          height: 30vw;
+        }
+      }
+
+      @media only screen and (max-width: 320px) {
+
+      }
+    </style>
+
+    <div id="voterView">
+      <fullscreen-icon-button target="#voterView" title="fullscreen" tabindex="0"></fullscreen-icon-button>
+      <div class="horizontal center-center layout">
+        <paper-button raised style="background-color: #d32F2f; color: white;" on-click="__voteNO">No :(</paper-button>
+        <paper-button raised style="background-color: white;" on-click="__voteOK">OKAY :|</paper-button>
+        <paper-button raised style="background-color: #4caf50; color: white;" on-click="__voteYES">COOL :)
+        </paper-button>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'tardis-session-voter',
+
+      properties: {
+        sessionId: {
+          type: String,
+          value: '101'
+        }
+      },
+
+      ready: function () {
+        this.votesRef = firebase.app('tardis').database().ref('/votes/' + this.sessionId);
+      },
+
+      __vote: function (value) {
+        console.log(value);
+        this.votesRef.push(value);
+      },
+
+      __voteNO: function () {
+        this.__vote(-1);
+      },
+
+      __voteOK: function () {
+        this.__vote(0);
+      },
+
+      __voteYES: function () {
+        this.__vote(1);
+      }
+    });
+  </script>
+</dom-module>

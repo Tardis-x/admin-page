@@ -1,0 +1,89 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+
+<dom-module id="tardis-session-selector">
+  <template>
+    <style include="iron-flex">
+      :host {
+        display: block;
+      }
+
+      paper-tabs, paper-toolbar {
+        background-color: var(--paper-blue-900);
+        color: #fff;
+      }
+
+      paper-card {
+        margin: 8px;
+      }
+    </style>
+
+    <firebase-query
+      id="query"
+      app-name="tardis"
+      path="/schedule"
+      data="{{scheduleData}}">
+    </firebase-query>
+
+    <paper-tabs selected="{{selectedDay}}">
+      <template is="dom-repeat" items="[[scheduleData]]">
+        <paper-tab>[[item.dateReadable]]</paper-tab>
+      </template>
+    </paper-tabs>
+
+    <iron-pages selected="[[selectedDay]]">
+      <template is="dom-repeat" items="[[scheduleData]]" as="day">
+        <div>
+          <template is="dom-repeat" items="[[day.timeslots]]" as="timeslot">
+            <div class="layout horizontal">
+              [[timeslot.startTime]] – [[timeslot.endTime]]
+              <div class="layout horizontal flex">
+                <template is="dom-repeat" items="[[timeslot.sessions]]" as="sess">
+                  <paper-card class="layout flex-auto">
+                    [[sess]]
+                  </paper-card>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+      </template>
+
+    </iron-pages>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'tardis-session-selector',
+
+      properties: {
+        selectedDay: {
+          value: 0
+        },
+        sessionId: {
+          type: String,
+          value: '101'
+        }
+      },
+
+      observers: [
+        '_scheduleData(scheduleData)'
+      ],
+
+      _scheduleData: function (scheduleData) {
+        console.log(scheduleData);
+      },
+
+      ready: function () {
+        this.votesRef = firebase.app('tardis').database().ref('/votes/' + this.sessionId);
+      }
+    });
+  </script>
+</dom-module>

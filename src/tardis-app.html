@@ -3,6 +3,9 @@
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
@@ -10,10 +13,13 @@
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="tardis-login.html">
+<link rel="import" href="voter/tardis-voter.html">
 
 <dom-module id="tardis-app">
   <template>
@@ -34,11 +40,48 @@
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
+
+      .drawer-list {
+        margin: 0 20px;
+      }
+
+      .drawer-list a {
+        display: block;
+
+        padding: 0 16px;
+
+        text-decoration: none;
+
+        color: var(--app-secondary-color);
+
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
     </style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{subroute}}"></app-route>
 
     <app-drawer-layout fullbleed force-narrow>
       <app-drawer swipe-open id="appDrawer">
         <app-toolbar><div main-title>Tardis X</div></app-toolbar>
+        <iron-selector
+          selected="[[page]]"
+          attr-for-selected="name"
+          class="drawer-list"
+          role="navigation"
+          on-iron-select="closeDrawer"
+        >
+          <a name="view1" href="/voter">Voter</a>
+        </iron-selector>
       </app-drawer>
 
       <!-- Main content -->
@@ -55,6 +98,9 @@
             </paper-icon-button>
           </app-toolbar>
         </app-header>
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+          <tardis-voter name="voter" route="[[subroute]]"></tardis-voter>
+        </iron-pages>
 
       </app-header-layout>
     </app-drawer-layout>
@@ -78,7 +124,18 @@
     Polymer({
       is: 'tardis-app',
       properties: {
+        page: {
+          type: String
+        }
+      },
 
+      observers: [
+        '_routePageChanged(routeData.page)',
+//        '_userData(user)'
+      ],
+
+      _routePageChanged: function(page) {
+        this.page = page || 'voter';
       },
 
       signIn: function() {
@@ -93,6 +150,10 @@
         if (this.$.auth) {
           this.$.auth.signOut();
         }
+      },
+
+      closeDrawer: function() {
+        this.$.appDrawer.close();
       }
     });
   </script>
