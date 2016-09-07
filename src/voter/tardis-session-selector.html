@@ -71,8 +71,7 @@
                 <template is="dom-repeat" items="[[timeslot.sessions]]" as="track">
                   <template is="dom-repeat" items="[[track]]" as="session">
 
-
-                    <a href$="/voter/[[session.$key]]" layout flex>
+                    <a href$="/voter/[[session.id]]" layout flex>
                       <paper-card layout flex style$="background-color: [[_getTagColor(session.tags.0)]]">
                         [[session.title]]
                       </paper-card>

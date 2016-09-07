@@ -29,6 +29,7 @@
       paper-button {
         width: 24vw;
         height: 24vw;
+        font-size: 5vw;
       }
 
       @media only screen and (max-width: 1200px) {
@@ -66,6 +67,7 @@
 
     <div id="voterView">
       <fullscreen-icon-button target="#voterView" title="fullscreen" tabindex="0"></fullscreen-icon-button>
+
       <div class="horizontal center-center layout">
         <paper-button raised style="background-color: #d32F2f; color: white;" on-click="__voteNO">No :(</paper-button>
         <paper-button raised style="background-color: white;" on-click="__voteOK">OKAY :|</paper-button>
@@ -80,26 +82,32 @@
       is: 'tardis-session-voter',
 
       properties: {
-        sessionId: {
+        id: {
           type: String,
-          value: '101'
+          observer: '_sessionChanged'
         }
       },
 
       ready: function () {
-        this.votesRef = firebase.app('tardis').database().ref('/votes/' + this.sessionId);
+        this.votesRef = firebase.app('tardis').database().ref('/votes');
       },
 
-      __vote: function (value) {
-        console.log(value);
-        this.votesRef.push(value);
+      _sessionChanged: function(newValue) {
+        this.sessionVotesRef = this.votesRef.child(newValue);
       },
 
-      __voteNO: function () {
+      __vote: function(value) {
+        this.sessionVotesRef.push({
+          time: firebase.database.ServerValue.TIMESTAMP,
+          value: value
+        });
+      },
+
+      __voteNO: function() {
         this.__vote(-1);
       },
 
-      __voteOK: function () {
+      __voteOK: function() {
         this.__vote(0);
       },
 
