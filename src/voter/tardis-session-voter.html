@@ -69,9 +69,9 @@
       <fullscreen-icon-button target="#voterView" title="fullscreen" tabindex="0"></fullscreen-icon-button>
 
       <div class="horizontal center-center layout">
-        <paper-button raised style="background-color: #d32F2f; color: white;" on-click="__voteNO">No :(</paper-button>
-        <paper-button raised style="background-color: white;" on-click="__voteOK">OKAY :|</paper-button>
-        <paper-button raised style="background-color: #4caf50; color: white;" on-click="__voteYES">COOL :)
+        <paper-button raised style="background-color: #d32F2f; color: white;" on-click="_voteNO">No :(</paper-button>
+        <paper-button raised style="background-color: white;" on-click="_voteOK">OKAY :|</paper-button>
+        <paper-button raised style="background-color: #4caf50; color: white;" on-click="_voteYES">COOL :)
         </paper-button>
       </div>
     </div>
@@ -96,23 +96,23 @@
         this.sessionVotesRef = this.votesRef.child(newValue);
       },
 
-      __vote: function(value) {
+      _vote: function(value) {
         this.sessionVotesRef.push({
           time: firebase.database.ServerValue.TIMESTAMP,
           value: value
         });
       },
 
-      __voteNO: function() {
-        this.__vote(-1);
+      _voteNO: function() {
+        this._vote(-1);
       },
 
-      __voteOK: function() {
-        this.__vote(0);
+      _voteOK: function() {
+        this._vote(0);
       },
 
-      __voteYES: function () {
-        this.__vote(1);
+      _voteYES: function () {
+        this._vote(1);
       }
     });
   </script>
