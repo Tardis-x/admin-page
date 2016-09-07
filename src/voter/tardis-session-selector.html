@@ -9,7 +9,7 @@
 
 <dom-module id="tardis-session-selector">
   <template>
-    <style include="iron-flex">
+    <style include="shared-styles">
       :host {
         display: block;
       }
@@ -21,13 +21,32 @@
 
       paper-card {
         margin: 8px;
+        padding: 8px;
+        color: #ffffff;
+      }
+
+      .start-time {
+        padding-left: 24px;
+        min-width: 110px;
+        color: var(--secondary-text-color);
+      }
+
+      .start-time .hours {
+        font-size: 56px;
+        font-weight: 300;
+        letter-spacing: -0.04em;
+      }
+
+      .start-time .minutes {
+        margin-left: 3px;
+        font-size: 16px;
       }
     </style>
 
     <firebase-query
       id="query"
       app-name="tardis"
-      path="/schedule"
+      path="/collected/schedule"
       data="{{scheduleData}}">
     </firebase-query>
 
@@ -41,13 +60,24 @@
       <template is="dom-repeat" items="[[scheduleData]]" as="day">
         <div>
           <template is="dom-repeat" items="[[day.timeslots]]" as="timeslot">
-            <div class="layout horizontal">
-              [[timeslot.startTime]] – [[timeslot.endTime]]
-              <div class="layout horizontal flex">
-                <template is="dom-repeat" items="[[timeslot.sessions]]" as="sess">
-                  <paper-card class="layout flex-auto">
-                    [[sess]]
-                  </paper-card>
+            <div layout horizontal>
+
+              <div class="start-time">
+                <span class="hours">[[_splitText(timeslot.startTime, ':', 0)]]</span>
+                <span class="minutes">[[_splitText(timeslot.startTime, ':', 1)]]</span>
+              </div>
+
+              <div layout horizontal flex>
+                <template is="dom-repeat" items="[[timeslot.sessions]]" as="track">
+                  <template is="dom-repeat" items="[[track]]" as="session">
+
+
+                    <a href$="/voter/[[session.$key]]" layout flex>
+                      <paper-card layout flex style$="background-color: [[_getTagColor(session.tags.0)]]">
+                        [[session.title]]
+                      </paper-card>
+                    </a>
+                  </template>
                 </template>
               </div>
             </div>
@@ -83,7 +113,15 @@
 
       ready: function () {
         this.votesRef = firebase.app('tardis').database().ref('/votes/' + this.sessionId);
-      }
+      },
+
+      _getTagColor: function (tag) {
+        return tag ? this.getComputedStyleValue('--' + tag.toLowerCase()) : 'white';
+      },
+
+      _splitText: function (text, divider, index) {
+        return text.split(divider)[index];
+      },
     });
   </script>
 </dom-module>
