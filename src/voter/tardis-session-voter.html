@@ -69,9 +69,9 @@
       <fullscreen-icon-button target="#voterView" title="fullscreen" tabindex="0"></fullscreen-icon-button>
 
       <div class="horizontal center-center layout">
-        <paper-button raised style="background-color: #d32F2f; color: white;" on-click="_voteNO">No :(</paper-button>
-        <paper-button raised style="background-color: white;" on-click="_voteOK">OKAY :|</paper-button>
-        <paper-button raised style="background-color: #4caf50; color: white;" on-click="_voteYES">COOL :)
+        <paper-button id="noVote" raised style="background-color: #d32F2f; color: white;">No :(</paper-button>
+        <paper-button id="okayVote" raised style="background-color: white;">OKAY :|</paper-button>
+        <paper-button id="yesVote" raised style="background-color: #4caf50; color: white;">COOL :)
         </paper-button>
       </div>
     </div>
@@ -90,6 +90,9 @@
 
       ready: function () {
         this.votesRef = firebase.app('tardis').database().ref('/votes');
+        this.listen(this.$.noVote, 'tap', '_voteNO');
+        this.listen(this.$.okayVote, 'tap', '_voteOK');
+        this.listen(this.$.yesVote, 'tap', '_voteYES');
       },
 
       _sessionChanged: function(newValue) {

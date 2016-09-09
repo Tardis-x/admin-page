@@ -1,4 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
@@ -15,6 +17,13 @@
       }
     </style>
 
+    <firebase-query
+      id="scheduleQuery"
+      app-name="tardis"
+      path="/collected/schedule"
+      data="{{schedule}}">
+    </firebase-query>
+
     <app-route
       route="{{route}}"
       pattern="/:id"
@@ -26,7 +35,7 @@
       data="{{routeData}}"></app-route>
 
     <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-      <tardis-session-selector name="selector"></tardis-session-selector>
+      <tardis-session-selector name="selector" schedule="[[schedule]]"></tardis-session-selector>
       <tardis-session-voter name="voter" id="[[routeData.id]]"></tardis-session-voter>
     </iron-pages>
   </template>
@@ -36,16 +45,12 @@
       is: 'tardis-voter',
 
       properties: {
-        sessionId: {
-          type: String,
-          value: '101'
-        },
-        page: String
+        page: String,
+        schedule: Object,
+        sessions: {
+          type: Object
+        }
       },
-//
-//      ready: function () {
-//        this.votesRef = firebase.app('tardis').database().ref('/votes/' + this.sessionId);
-//      },
 
       observers: [
         '_routePageChanged(route)'
