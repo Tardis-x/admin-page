@@ -1,5 +1,9 @@
 {
   "name": "tardis-x",
+  "authors": [
+    "Oleksandr Pidlisnyi, GDG Lviv"
+  ],
+  "private": true,
   "description": "Tardis X: WEB Part",
   "main": "index.html",
   "dependencies": {
