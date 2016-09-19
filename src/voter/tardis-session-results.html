@@ -1,0 +1,99 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/google-chart/google-chart.html">
+
+<dom-module id="tardis-session-results">
+  <template>
+    <style include="iron-flex">
+      :host {
+        display: block;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding-top: 64px;
+      }
+
+      google-chart {
+        @apply(--layout-flex);
+        width: auto;
+        height: 100vh;
+      }
+    </style>
+    <google-chart
+      type='bar'
+      options='{ "legend": { "position": "top" }, "bars": "horizontal", "isStacked": "percent" , "series": { "0": { "color": "#78c257"}, "1": { "color": "#BBDEFB"}, "2": { "color": "#E53935"} } }'
+      data="[[chartData]]">
+    </google-chart>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'tardis-session-results',
+
+      properties: {
+        id: {
+          type: String,
+          observer: '_sessionChanged'
+        },
+        votes: {
+          type: Object,
+          observer: '_votesChanged'
+        },
+        chartData: {
+          value: [
+            ["Session", "Cool", "OK", "No"],
+            ["2010", 10, 24, 20],
+            ["2020", 16, 22, 23],
+            ["2030", 28, 19, 29]
+          ]
+        }
+      },
+
+      ready: function () {
+        this.votesRef = firebase.app('tardis').database().ref('/votes');
+
+        var _this = this;
+        this.votesRef.on('value', function(snapshot) {
+          _this.votes = snapshot.val();
+        });
+      },
+
+      _votesChanged: function(newValue) {
+//        console.log(newValue);
+
+        this.chartData = [
+          [ "Session", "Cool", "OK", "No" ]
+        ];
+        for( var key in this.votes) {
+//          console.log(key);
+          var line = [key];
+          var vs = this.votes[key];
+          var cool = 0;
+          var okay = 0;
+          var no = 0;
+
+          for(var i in vs) {
+            var v = vs[i].value;
+
+            cool = v === 1 ? cool + 1 : cool;
+            okay = v === 0 ? okay + 1 : okay;
+            no = v === -1 ? no + 1 : no;
+          }
+
+          line.push(cool);
+          line.push(okay);
+          line.push(no);
+//          console.log(line);
+
+          this.chartData.push(line);
+        }
+console.log(this.chartData);
+      },
+
+      _sessionChanged: function(newValue) {
+        this.sessionVotesRef = this.votesRef.child(newValue);
+      }
+    });
+  </script>
+</dom-module>

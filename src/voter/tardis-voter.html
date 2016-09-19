@@ -8,6 +8,7 @@
 
 <link rel="import" href="tardis-session-selector.html">
 <link rel="import" href="tardis-session-voter.html">
+<link rel="import" href="tardis-session-results.html">
 
 <dom-module id="tardis-voter">
   <template>
@@ -26,8 +27,15 @@
 
     <app-route
       route="{{route}}"
+      pattern="/results"
+      data="{{routeData}}"></app-route>
+
+    <app-route
+      route="{{route}}"
       pattern="/:id"
       data="{{routeData}}"></app-route>
+
+
 
     <app-route
       route="{{route}}"
@@ -36,7 +44,9 @@
 
     <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
       <tardis-session-selector name="selector" schedule="[[schedule]]"></tardis-session-selector>
+      <tardis-session-results name="results"></tardis-session-results>
       <tardis-session-voter name="voter" id="[[routeData.id]]"></tardis-session-voter>
+
     </iron-pages>
   </template>
 
@@ -53,11 +63,14 @@
       },
 
       observers: [
-        '_routePageChanged(route)'
+        '_routePageChanged(route, routeData)'
       ],
 
-      _routePageChanged: function(route) {
-        this.page = route.path ? 'voter' : 'selector';
+      _routePageChanged: function(route, routeData) {
+        this.page = routeData.id ? 'voter' : 'selector';
+        if (routeData.id === 'results') {
+          this.page = 'results';
+        }
       }
     });
   </script>
