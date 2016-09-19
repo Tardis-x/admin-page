@@ -1,0 +1,19 @@
+{
+  "rules": {
+    ".read": true,
+    "USER": {
+      "$user_id": {
+        ".read": true,
+        ".write": "$user_id === auth.uid"
+      }
+    },
+    "speakers": {
+      ".read": "root.child('USER').child(auth.uid).child('permissions').child('speakers').val() === true",
+      ".write": "root.child('USER').child(auth.uid).child('permissions').child('speakers').val() === true"
+    },
+    "votes": {
+      ".read": "root.child('USER').child(auth.uid).child('permissions').child('votes').val() === true",
+      ".write": "root.child('USER').child(auth.uid).child('permissions').child('votes').val() === true"
+    }
+  }
+}
