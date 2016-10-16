@@ -34,6 +34,7 @@
       }
 
       #chart {
+        margin: 16px;
         /*background: gray;*/
         /*overflow-y: auto;*/
       }
@@ -78,14 +79,6 @@
           type: Object
         },
         chartData: {
-          value: [
-            ["Session", "Cool", "OK", "No"],
-            ["2010", 10, 24, 20],
-            ["2020", 16, 22, 23],
-            ["2030", 28, 19, 29]
-          ]
-        },
-        chartData1: {
           value: []
         }
       },
@@ -98,12 +91,11 @@
         if (splice) {
 //          console.log(splice.indexSplices[splice.indexSplices.length - 1].object);
         }
-//        console.log('FFFF', splice);
       },
 
       ready: function () {
         this.votesRef = firebase.app('tardis').database().ref('/votes');
-        this.sessionsRef = firebase.app('tardis').database().ref('/sessions');
+        this.sessionsRef = firebase.app('tardis').database().ref('/collected/sessions');
 
 
         var _this = this;
@@ -122,63 +114,185 @@
 
       _render: function (data) {
 
-        var svg= d3.select('#chart')
-          .append('svg')
-          .attr('width', '100%')
-//          .attr('width', w)
-          .attr('height', 1500);
-
-        var session = svg.selectAll('rect.colorBar')
-          .data(data)
-          .enter()
-          .append('g');
-
-//        session.append("g")
-//          .style("text-anchor", "end")
-//          .attr("transform", "translate(-6," + height / 2 + ")");
-
-        session.append("text")
-//          .style("text-anchor", "end")
-          .style("fill", "white")
-//          .attr("transform", "translate(0, 40)")
-          .attr("class", "title")
-          .text(function(d) { return d.title; })
-          .attr('y', function(d,i){
-            return i * (25 + 2) - 4;
+        const sessions = data
+          .map(function (session) {
+            return {
+              title: session.title,
+              speakers: session.speakers,
+              values: [
+                session.cool,
+                session.okay,
+                session.no
+              ],
+              percentage: [
+                (session.cool + session.okay + session.no) ? (100.0 * session.cool / (session.cool + session.okay + session.no)) : 0,
+                (session.cool + session.okay + session.no) ? (100.0 * session.okay / (session.cool + session.okay + session.no)) : 0,
+                (session.cool + session.okay + session.no) ? (100.0 * session.no / (session.cool + session.okay + session.no)) : 0
+              ]
+            }
           })
-        ;
+          .filter(function (session) {
+            return session.values[0] + session.values[1] + session.values[2];
+          })
+          .sort(function (a, b) {
+            return ( b.percentage[0] != a.percentage[0]) ?
+              (b.percentage[0] - a.percentage[0]) :
+              (
+                ( b.percentage[1] != a.percentage[1]) ?
+                  (b.percentage[1] - a.percentage[1]) :
+                  (b.percentage[2] - a.percentage[2])
+              )
+          });
 
-        var columnMapping = {
-          cool: { barColor: 'green' },
-          okay: { barColor: 'gray' },
-          no: { barColor: 'red' }
-        };
+        var pie=d3.pie()
+          .value(function(d){return d})
+          .sort(null)
+          .padAngle(.03);
 
-        var columns = Object.keys(columnMapping);
+        var w=150,h=150;
 
-        columns.forEach(function (columnKey, columnI) {
-          var column = columnMapping[columnKey];
+        var outerRadius=w/2;
+        var innerRadius=65;
 
-          session
-            .append('rect')
-            .attr('width', function(d,i){
-              var sum = columnSum(d, columns);
-              return ( sum ? (100.0 * d[columnKey] / sum) : 0) + '%';
-            })
-            .attr('height', function(d,i){
-              return 25;
-            })
-            .attr('x', function(d,i){
-              var x = columnSum(d, columns.slice(0, columnI));
-              var sum = columnSum(d, columns);
+        var www = 5;
 
-              return ( sum ? (100.0 * x / sum) : 0) + '%';
-            })
-            .attr('y', function(d,i){
-              return i * (25 + 2)
-            })
-            .attr('fill', column.barColor);
+//        var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        var arc=d3.arc()
+          .outerRadius(outerRadius)
+          .innerRadius(innerRadius);
+
+        var svg=d3.select("#chart")
+          .append("svg")
+
+          .attr('width', '100%')
+          .attr('height', Math.ceil(sessions.length / www) * (h + 15) - 15);
+
+        sessions.forEach(function(sessionData, ii) {
+
+          var g = svg
+            .append('g')
+            .attr('width', w)
+            .attr('height', h)
+            .attr('transform', 'translate('+(w/2 + ii % www * (w + 15))+','+ (Math.floor(ii / www) * (h + 15) + h/2) +')');
+
+          if (sessionData.speakers) {
+            g
+              .append('defs')
+              .append('pattern')
+              .attr('id', 'speaker' + sessionData.speakers[0].id)
+              .attr('x', 0)
+              .attr('y', 0)
+              .attr('width', '1')
+              .attr('height', '1')
+              .append('image')
+              .attr('xlink:href', 'https://devfest.gdg.org.ua' + sessionData.speakers[0].photoUrl)
+              .attr('width', w);
+
+            g.append("circle")
+              .attr("class", "logo")
+              .attr("r", innerRadius - 5)
+//                        .style("fill", "transparent")
+              .style("fill", 'url(#speaker' + sessionData.speakers[0].id + ')')
+              .style('fill-opacity', 0.5)
+              .on("mouseover", function(){
+                d3.select(this)
+                  .transition()
+                  .duration(300)
+                  .style('fill-opacity', 1)
+//                  .style("fill", "url(#image)");
+              })
+              .on("mouseout", function(){
+                d3.select(this)
+                  .transition()
+                  .duration(500)
+                  .style('fill-opacity', 0.5)
+//                  .style("fill", "transparent");
+              });
+          }
+
+          var colorss = ['#78c257', '#bbdefb', '#e53935'];
+//        var colorss = [color(2), color(0), color(3)];
+
+          var path=g.selectAll('path')
+            .data(pie(sessionData.values))
+            .enter()
+            .append('path')
+            .attr('d', arc)
+            .attr('fill', function(d,i){
+//            console.log(d);
+              return colorss[i];
+            });
         });
+
+//        .attr('width', w)
+//          .attr('height', h);
+
+
+//
+//          .append('g')
+//          .attr('transform', 'translate('+w/2+','+h/2+')');
+
+
+
+//
+//        var svg= d3.select('#chart')
+//          .append('svg')
+//          .attr('width', '100%')
+////          .attr('width', w)
+//          .attr('height', 1500);
+//
+//        var session = svg.selectAll('rect.colorBar')
+//          .data(data)
+//          .enter()
+//          .append('g');
+//
+////        session.append("g")
+////          .style("text-anchor", "end")
+////          .attr("transform", "translate(-6," + height / 2 + ")");
+//
+//        session.append("text")
+////          .style("text-anchor", "end")
+//          .style("fill", "white")
+////          .attr("transform", "translate(0, 40)")
+//          .attr("class", "title")
+//          .text(function(d) { return d.title; })
+//          .attr('y', function(d,i){
+//            return i * (25 + 2) - 4;
+//          })
+//        ;
+//
+//        var columnMapping = {
+//          cool: { barColor: 'green' },
+//          okay: { barColor: 'gray' },
+//          no: { barColor: 'red' }
+//        };
+//
+//        var columns = Object.keys(columnMapping);
+//
+//        columns.forEach(function (columnKey, columnI) {
+//          var column = columnMapping[columnKey];
+//
+//          session
+//            .append('rect')
+//            .attr('width', function(d,i){
+//              var sum = columnSum(d, columns);
+//              return ( sum ? (100.0 * d[columnKey] / sum) : 0) + '%';
+//            })
+//            .attr('height', function(d,i){
+//              return 25;
+//            })
+//            .attr('x', function(d,i){
+//              var x = columnSum(d, columns.slice(0, columnI));
+//              var sum = columnSum(d, columns);
+//
+//              return ( sum ? (100.0 * x / sum) : 0) + '%';
+//            })
+//            .attr('y', function(d,i){
+//              return i * (25 + 2)
+//            })
+//            .attr('fill', column.barColor);
+//        });
       },
 
       _votesChanged: function(newValue) {
@@ -190,7 +304,7 @@
         for( var key in this.votes) {
 //          var sess = {};
 //          console.log(key);
-          var line = [this.sessions[key].title];
+//          var line = [this.sessions[key].title];
           var vs = this.votes[key];
           var cool = 0;
           var okay = 0;
@@ -204,12 +318,13 @@
             no = v === -1 ? no + 1 : no;
           }
 
-          line.push(cool);
-          line.push(okay);
-          line.push(no);
+//          line.push(cool);
+//          line.push(okay);
+//          line.push(no);
 
           var sess = {
             title: this.sessions[key].title,
+            speakers: this.sessions[key].speakers,
             cool: cool,
             okay: okay,
             no: no
@@ -217,13 +332,13 @@
 
 //          console.log(line);
 
-          this.push('chartData1', sess);
+          this.push('chartData', sess);
 //          this.set()
-          this.chartData.push(line);
+//          this.chartData.push(line);
         }
 
-        this._render(this.chartData1);
-console.log(this.chartData1);
+        this._render(this.chartData);
+//console.log(this.chartData);
       },
 
       _sessionChanged: function(newValue) {
