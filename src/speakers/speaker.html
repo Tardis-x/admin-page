@@ -16,6 +16,7 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 
 
+<link rel="import" href="./components/speaker.html">
 
 <dom-module id="tardis-speaker">
   <template>
@@ -47,37 +48,8 @@
 
     <paper-toast id="toast" horizontal-align="right" vertical-align="top" vertical-offset="90"></paper-toast>
 
-    <paper-card>
-      <div>
-        <img width="100" height="100" src="https://devfest.gdg.org.ua[[data.photoUrl]]" />
-      </div>
-    </paper-card>
+    <speaker-profile-form speaker="[[data]]" hidden$="[[_computeHidden(data)]]" on-save="save"></speaker-profile-form>
 
-    <div class="card">
-      <paper-icon-button icon="icons:save" on-tap="save"></paper-icon-button>
-      <paper-icon-button icon="icons:delete" on-tap="destroy"></paper-icon-button>
-
-      <paper-input label="Name" value="{{data.name}}"></paper-input>
-
-
-      <div>
-        <img width="100" height="100" src="https://devfest.gdg.org.ua[[data.photoUrl]]" />
-      </div>
-
-      <paper-toggle-button checked="{{data.featured}}">Featured</paper-toggle-button>
-
-      <paper-input label="Company" value="{{data.company}}"></paper-input>
-      <paper-input label="Title" value="{{data.title}}"></paper-input>
-      <div>
-        <img width="100" height="100" src="https://devfest.gdg.org.ua[[data.companyLogo]]" />
-      </div>
-
-      <paper-input label="Country" value="{{data.country}}"></paper-input>
-
-      <paper-textarea label="Short Bio" value="{{data.shortBio}}"></paper-textarea>
-
-      <paper-textarea label="Bio" value="{{data.bio}}"></paper-textarea>
-    </div>
 
 
   </template>
@@ -90,14 +62,16 @@
       properties: {
         id: String,
         dbData: Object,
-        data: Object,
+        data: {
+          type: Object,
+          value: {},
+        },
 
-        fbRef: Object
+        fbRef: Object,
       },
 
       observers: [
         '_idChanged(id)',
-        '_dataChanged(data)'
       ],
 
       _idChanged: function (id) {
@@ -109,22 +83,23 @@
         });
       },
 
-      _dataChanged: function (data) {
-        console.log(data.featured);
-//        this.data = data;
+      _computeHidden: function (data) {
+        return !Object.keys(data).length;
       },
 
       __saved: function (msg) {
         this.$.toast.show(msg ? msg : 'Saved.');
       },
 
-      save: function () {
+      save: function (e, speaker) {
         var self = this;
         function __toast (msg) {
           self.$.toast.show({ text: msg ? msg : 'Saved.'});
         }
 
-        this.fbRef.set(this.data)
+//        console.log(speaker);
+//
+        this.fbRef.set(speaker)
           .then(function () {
             __toast('Saved.');
           })
