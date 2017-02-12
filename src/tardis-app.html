@@ -81,8 +81,8 @@
           role="navigation"
           on-iron-select="closeDrawer"
         >
-          <a href="/voter">Voter</a>
-          <a href="/voter/results">Results</a>
+          <!--<a href="/voter">Voter</a>-->
+          <!--<a href="/voter/results">Results</a>-->
           <a href="/speakers">Speakers</a>
         </iron-selector>
       </app-drawer>
@@ -139,7 +139,7 @@
       ],
 
       _routePageChanged: function(page) {
-        this.page = page || 'voter';
+        this.page = page || 'speakers';
       },
 
       signIn: function() {
