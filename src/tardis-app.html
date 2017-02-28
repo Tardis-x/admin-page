@@ -21,7 +21,8 @@
 <link rel="import" href="shared-styles.html">
 
 <link rel="import" href="tardis-login.html">
-<link rel="import" href="voter/tardis-voter.html">
+
+<link rel="import" href="speakers/index.html">
 
 <dom-module id="tardis-app">
   <template>
@@ -80,8 +81,9 @@
           role="navigation"
           on-iron-select="closeDrawer"
         >
-          <a href="/voter">Voter</a>
-          <a href="/voter/results">Results</a>
+          <!--<a href="/voter">Voter</a>-->
+          <!--<a href="/voter/results">Results</a>-->
+          <a href="/speakers">Speakers</a>
         </iron-selector>
       </app-drawer>
 
@@ -101,6 +103,7 @@
         </app-header>
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
           <tardis-voter name="voter" route="[[subroute]]"></tardis-voter>
+          <tardis-speakers name="speakers" route="[[subroute]]"></tardis-speakers>
         </iron-pages>
 
       </app-header-layout>
@@ -136,7 +139,7 @@
       ],
 
       _routePageChanged: function(page) {
-        this.page = page || 'voter';
+        this.page = page || 'speakers';
       },
 
       signIn: function() {
