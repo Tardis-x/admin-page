@@ -1,54 +1,21 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 
-
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-
-<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
-<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
-
-<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
-
-
 <link rel="import" href="./components/speaker.html">
 
 <dom-module id="tardis-speaker">
   <template>
-    <style include="iron-flex">
-      :host {
-        display: block;
-      }
-      .card {
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-        padding: 16px;
-        margin: 24px;
-        border-radius: 5px;
-        background-color: #fff;
-        color: #757575;
-      }
-      .card > *{
-        line-height: 40px;
-      }
-      h1 {
-        font-size: 22px;
-        margin: 16px 0;
-        color: #212121;
-      }
-
-      #editor > * {
-        width: 50%;
-      }
-    </style>
+    <firebase-document
+      app-name="tardis"
+      id="documentQuery"
+      path="/speakers/{{id}}"
+      data="{{data}}"
+    >
+    </firebase-document>
 
     <paper-toast id="toast" horizontal-align="right" vertical-align="top" vertical-offset="90"></paper-toast>
 
-    <speaker-profile-form speaker="[[data]]" hidden$="[[_computeHidden(data)]]" on-save="save"></speaker-profile-form>
+    <speaker-profile-form speaker="[[data]]" on-save="save"></speaker-profile-form>
 
 
 
@@ -64,7 +31,7 @@
         dbData: Object,
         data: {
           type: Object,
-          value: {},
+          observer: '_dataChanged'
         },
 
         fbRef: Object,
@@ -72,15 +39,22 @@
 
       observers: [
         '_idChanged(id)',
+
       ],
 
       _idChanged: function (id) {
-        this.fbRef = firebase.app('tardis').database().ref('/speakers/' + id);
+          console.log(id);
+          console.log(this.$.documentQuery.ref);
+//        this.fbRef = firebase.app('tardis').database().ref('/speakers/' + id);
+//
+//        var self = this;
+//        this.fbRef.on('value', function (snapshot) {
+//          self.data = snapshot.val();
+//        });
+      },
 
-        var self = this;
-        this.fbRef.on('value', function (snapshot) {
-          self.data = snapshot.val();
-        });
+      _dataChanged: function (newData, oldData) {
+          console.log(newData, oldData);
       },
 
       _computeHidden: function (data) {
