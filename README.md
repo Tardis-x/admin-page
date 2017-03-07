@@ -1,7 +1,11 @@
 # Tardis X: WEB Part
 
-## Deploy
+## Install
 ```
-$ polymer build
-$ firebase deploy
+$ npm install
+```
+
+## Run
+```
+$ npm start
 ```
