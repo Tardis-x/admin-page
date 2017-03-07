@@ -1,13 +1,8 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/src/redux-store.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-
-<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-
-<dom-module id="tardis-speakers-list">
+<dom-module id="speakers-list">
   <template>
     <style include="iron-flex">
       :host {
@@ -30,68 +25,39 @@
         color: #212121;
       }
     </style>
-
-    <app-route
-        route="{{route}}"
-        pattern="/:id"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
-
-    <app-route
-        route="{{route}}"
-        pattern="/"
-        tail="{{subroute}}"></app-route>
-
-    <firebase-query
-        id="query"
-        app-name="tardis"
-        path="/speakers"
-        data="{{data}}">
-    </firebase-query>
-
-    <template is="dom-repeat" items="{{data}}">
-      <div class="card layout horizontal">
-        <div class="flex">[[item.name]]</div>
-        <div class="flex">[[item.company]]</div>
-        <div class="flex">[[item.title]]</div>
-        <div>
-          <a href="/speakers/[[item.$key]]" tabindex="-1">
-            <paper-icon-button icon="editor:mode-edit"></paper-icon-button>
-          </a>
+    <template is="dom-repeat" items="[[speakers]]">
+      <div>
+        <div class="card layout horizontal">
+          <div class="flex">[[item.name]]</div>
+          <div class="flex">[[item.company]]</div>
+          <div class="flex">[[item.title]]</div>
+          <div>
+            <a href="/speakers/[[item.$key]]" tabindex="-1">Edit</a>
+          </div>
         </div>
-
       </div>
     </template>
-
   </template>
-
   <script>
-
-    Polymer({
-
-      is: 'tardis-speakers-list',
-      properties: {
-        uid: String,
-        data: {
-          type: Object,
-          observer: 'dataChanged'
-        }
-      },
-
-      observers: [
-        '_dataChanged(data)'
-      ],
-
-      _dataChanged: function (data) {
-        console.log('_dataChanged', data);
-      },
-
-      dataChanged: function (newData, oldData) {
-        // do something when the query returns values
+    class SpeakersList extends ReduxMixin(Polymer.Element) {
+      static get is() {
+        return 'speakers-list'
       }
 
-    });
+      static get properties() {
+        return {
+          speakers: {
+            type: Array,
+            statePath: 'speakers'
+          }
+        };
+      }
 
+      connectedCallback() {
+        super.connectedCallback();
+      }
+    }
+
+    customElements.define(SpeakersList.is, SpeakersList);
   </script>
-
 </dom-module>

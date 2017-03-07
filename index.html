@@ -31,7 +31,22 @@
     <link rel="apple-touch-icon" sizes="120x120" href="/images/manifest/ios/icon-120x120.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/images/manifest/ios/icon-152x152.png">
 
-    <script src="/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script src="./bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="./node_modules/redux/dist/redux.js"></script>
+    <link rel="import" href="./bower_components/polymer-redux/polymer-redux.html">
+
+    <script src="./bower_components/firebase/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyA5mUpukxVw8_6Q1-iB0l6LYJTO_sYUlOY",
+        authDomain: "polymer-redux-fc2f7.firebaseapp.com",
+        databaseURL: "https://polymer-redux-fc2f7.firebaseio.com",
+        storageBucket: "polymer-redux-fc2f7.appspot.com",
+        messagingSenderId: "588819120020"
+      };
+      firebase.initializeApp(config);
+    </script>
 
     <link rel="import" href="/src/tardis-app.html">
 
@@ -45,13 +60,6 @@
     </style>
   </head>
   <body>
-    <firebase-app
-      name="tardis"
-      api-key="AIzaSyALDa2D7CMhK_wt2VkET1MaJuQXYVUJd2I"
-      auth-domain="hoverboard-experimental.firebaseapp.com"
-      database-url="https://hoverboard-experimental.firebaseio.com">
-    </firebase-app>
-
     <tardis-app></tardis-app>
   </body>
 </html>
