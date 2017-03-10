@@ -2,7 +2,8 @@
 
 <script>
   const initialState = {
-    speakers: []
+    speakers: [],
+    speaker: undefined
   };
 
   const reducer = (state, action) => {
@@ -14,6 +15,13 @@
           .map(key => Object.assign({}, action.data[key], { $key: key }) );
 
         return Object.assign({}, state, { speakers });
+
+      case 'FETCH_SPEAKER':
+        return state;
+
+      case 'FETCH_SPEAKER_SUCCESS':
+        const speaker = action.data;
+        return Object.assign({}, state, { speaker });
     }
   };
 
@@ -26,4 +34,24 @@
       data: snapshot.val()
     });
   });
+
+  const speakerActions = {
+    fetchSpeakers: () => {
+      firebase.database().ref('/speakers').once('value', snapshot => {
+        store.dispatch({
+          type: 'FETCH_SPEAKERS',
+          data: snapshot.val()
+        });
+      });
+    },
+
+    fetchSpeaker: (key) => {
+      firebase.database().ref(`/speakers/${key}`).once('value', snapshot => {
+        store.dispatch({
+          type: 'FETCH_SPEAKER_SUCCESS',
+          data: snapshot.val()
+        });
+      });
+    }
+  }
 </script>

@@ -1,40 +1,47 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/app-route/app-location.html">
 <link rel="import" href="/bower_components/app-route/app-route.html">
 <link rel="import" href="/bower_components/iron-pages/iron-pages.html">
 
-<link rel="import" href="/src/speakers/index.html">
+<link rel="import" href="list.html">
+<link rel="import" href="speaker.html">
 
-<dom-module id="tardis-app">
+<dom-module id="tardis-speakers">
   <template>
-    <app-location route="{{route}}"></app-location>
     <app-route
       route="{{route}}"
-      pattern="/:page"
-      data="{{routeData}}"
-      tail="{{subroute}}"></app-route>
+      pattern="/:id"
+      data="{{routeData}}"></app-route>
+
+    <app-route
+      route="{{route}}"
+      pattern="/"
+      data="{{routeData}}"></app-route>
 
     <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
-      <tardis-speakers name="speakers" route="[[subroute]]"></tardis-speakers>
+      <speakers-list name="list"></speakers-list>
+      <speaker-page name="speaker" id="[[routeData.id]]"></speaker-page>
     </iron-pages>
   </template>
   <script>
-    class TardisApp extends Polymer.Element {
+    class TardisSpeakers extends Polymer.Element {
       static get is() {
-        return 'tardis-app'
+        return 'tardis-speakers'
       }
 
       static get properties() {
         return {
           page: {
             type: String
+          },
+          route: {
+            type: Object
           }
         };
       }
 
       static get observers() {
         return [
-          '_routePageChanged(routeData.page)'
+          '_routePageChanged(route)'
         ];
       }
 
@@ -42,11 +49,11 @@
         super.connectedCallback();
       }
 
-      _routePageChanged(page) {
-        this.page = page || 'speakers';
+      _routePageChanged(route) {
+        this.page = this.route.path ? 'speaker' : 'list';
       }
     }
 
-    customElements.define(TardisApp.is, TardisApp);
+    customElements.define(TardisSpeakers.is, TardisSpeakers);
   </script>
 </dom-module>

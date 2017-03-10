@@ -1,13 +1,13 @@
 {
   "entrypoint": "index.html",
   "shell": "src/tardis-app.html",
-  "sourceGlobs": [
+  "sources": [
     "src/**/*",
-    "images/**/*",
-    "bower.json"
+    "images/**/*"
   ],
-  "includeDependencies": [
+  "extraDependencies": [
     "manifest.json",
-    "bower_components/webcomponentsjs/webcomponents-lite.js"
+    "bower_components/webcomponentsjs/webcomponents-lite.js",
+    "node_modules/redux/dist/redux.js"
   ]
 }
