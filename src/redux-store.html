@@ -10,7 +10,7 @@
     if (!state) return initialState;
 
     switch (action.type) {
-      case 'FETCH_SPEAKERS':
+      case 'FETCH_SPEAKERS_SUCCESS':
         const speakers = Object.keys(action.data)
           .map(key => Object.assign({}, action.data[key], { $key: key }) );
 
@@ -28,18 +28,18 @@
   const store = Redux.createStore(reducer);
   const ReduxMixin = PolymerRedux(store);
 
-  firebase.database().ref('/speakers').on('value', snapshot => {
-    store.dispatch({
-      type: 'FETCH_SPEAKERS',
-      data: snapshot.val()
-    });
-  });
+//  firebase.database().ref('/speakers').on('value', snapshot => {
+//    store.dispatch({
+//      type: 'FETCH_SPEAKERS',
+//      data: snapshot.val()
+//    });
+//  });
 
   const speakerActions = {
     fetchSpeakers: () => {
       firebase.database().ref('/speakers').once('value', snapshot => {
         store.dispatch({
-          type: 'FETCH_SPEAKERS',
+          type: 'FETCH_SPEAKERS_SUCCESS',
           data: snapshot.val()
         });
       });
