@@ -2,13 +2,13 @@
 
 <script>
   const initialState = {
-    speakers: [],
-    speaker: undefined
+    speakers: {
+      speakers: [],
+      speaker: undefined
+    }
   };
 
-  const reducer = (state, action) => {
-    if (!state) return initialState;
-
+  const speakersReducer = (state, action) => {
     switch (action.type) {
       case 'FETCH_SPEAKERS_SUCCESS':
         const speakers = Object.keys(action.data)
@@ -25,7 +25,15 @@
     }
   };
 
-  const store = Redux.createStore(reducer);
+  const appReducer = (state, action) => {
+    if (!state) return initialState;
+
+    const speakers = speakersReducer(state.speakers, action);
+
+    return { speakers }
+  };
+
+  const store = Redux.createStore(appReducer);
   const ReduxMixin = PolymerRedux(store);
 
 //  firebase.database().ref('/speakers').on('value', snapshot => {
@@ -38,6 +46,7 @@
   const speakerActions = {
     fetchSpeakers: () => {
       firebase.database().ref('/speakers').once('value', snapshot => {
+
         store.dispatch({
           type: 'FETCH_SPEAKERS_SUCCESS',
           data: snapshot.val()
