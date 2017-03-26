@@ -11,6 +11,7 @@
 <link rel="import" href="/bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 
 
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
 
@@ -43,49 +44,58 @@
       data="{{routeData}}"
       tail="{{subroute}}"></app-route>
 
-    <app-drawer-layout fullbleed force-narrow>
+    <template is="dom-if" if="{{!user}}">
+      <paper-button on-tap="login">Login</paper-button>
+    </template>
 
+    <template is="dom-if" if="{{user}}">
+      <app-drawer-layout fullbleed force-narrow>
 
-      <!-- Main content -->
-      <app-header-layout has-scrolling-region>
-        <app-header condenses reveals effects="waterfall">
-          <app-toolbar>
-            <paper-icon-button icon="menu" on-tap="toggleDrawer"></paper-icon-button>
-            <!--<paper-icon-button icon="menu" drawer-toggle></paper-icon-button>-->
-            <div main-title>Tardis X</div>
-            <paper-icon-button icon="add">+</paper-icon-button>
-            <paper-icon-button
-              icon="[[computeLockIcon(signedIn)]]"
-              disabled="[[!signedIn]]"
-              on-tap="signOut">
-            </paper-icon-button>
-          </app-toolbar>
-        </app-header>
+        <!-- Main content -->
+        <app-header-layout has-scrolling-region>
+          <app-header condenses reveals effects="waterfall">
+            <app-toolbar>
+              <!--<paper-icon-button icon="menu" on-tap="toggleDrawer"></paper-icon-button>-->
+              <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+              <div main-title>Tardis X [[user.displayName]]</div>
 
-        <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
-          <tardis-speakers name="speakers" route="[[subroute]]"></tardis-speakers>
-        </iron-pages>
+              <paper-icon-button icon="add">+</paper-icon-button>
+              <paper-icon-button
+                icon="[[computeLockIcon(user)]]"
 
-      </app-header-layout>
-      <app-drawer swipe-open id="appDrawer">
-        <app-toolbar><div main-title>Tardis X</div></app-toolbar>
-        <iron-selector
-          selected="[[page]]"
-          attr-for-selected="name"
-          class="drawer-list"
-          role="navigation"
-          on-iron-select="closeDrawer"
-        >
-          <!--<a href="/voter">Voter</a>-->
-          <!--<a href="/voter/results">Results</a>-->
-          <a href="/speakers">Speakers</a>
-        </iron-selector>
-      </app-drawer>
-    </app-drawer-layout>
+                on-tap="signOut">
+                <!--disabled="[[!signedIn]]"-->
+              </paper-icon-button>
+            </app-toolbar>
+          </app-header>
+
+          <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
+            <tardis-speakers name="speakers" route="[[subroute]]"></tardis-speakers>
+          </iron-pages>
+
+        </app-header-layout>
+        <app-drawer swipe-open id="appDrawer">
+          <app-toolbar><div main-title>Tardis X</div></app-toolbar>
+          <iron-selector
+            selected="[[page]]"
+            attr-for-selected="name"
+            class="drawer-list"
+            role="navigation"
+            on-iron-select="closeDrawer"
+          >
+            <!--<a href="/voter">Voter</a>-->
+            <!--<a href="/voter/results">Results</a>-->
+            <a href="/speakers">Speakers</a>
+          </iron-selector>
+
+        </app-drawer>
+      </app-drawer-layout>
+    </template>
 
   </template>
   <script>
-    class TardisApp extends Polymer.Element {
+//    class TardisApp extends Polymer.Element {
+    class TardisApp extends ReduxMixin(Polymer.Element) {
       static get is() {
         return 'tardis-app'
       }
@@ -94,6 +104,10 @@
         return {
           page: {
             type: String
+          },
+          user: {
+            type: Object,
+            statePath: 'auth.user'
           }
         };
       }
@@ -106,6 +120,11 @@
 
       connectedCallback() {
         super.connectedCallback();
+        authActions.getCurrentUser();
+      }
+
+      computeLockIcon() {
+        return this.user ? 'lock-open' : 'lock';
       }
 
       _routePageChanged(page) {
@@ -114,6 +133,15 @@
 
       toggleDrawer () {
         this.$.appDrawer.toggle();
+      }
+
+      login () {
+        authActions.signIn();
+      }
+
+      signOut () {
+        authActions.signOut();
+        console.log('signOut');
       }
     }
 

@@ -5,7 +5,11 @@
     speakers: {
       speakers: [],
       speaker: undefined
-    }
+    },
+    auth: {
+      user: undefined,
+      error: undefined,
+    },
   };
 
   const speakersReducer = (state, action) => {
@@ -22,15 +26,37 @@
       case 'FETCH_SPEAKER_SUCCESS':
         const speaker = action.data;
         return Object.assign({}, state, { speaker });
+
+      default:
+        return state;
+    }
+  };
+
+  const authReducer = (state, action) => {
+    switch (action.type) {
+      case 'SIGNIN_SUCCESS':
+        const user = action.data;
+        return Object.assign({}, state, { user });
+
+      case 'SIGNIN_FAILURE':
+        const auth = action.data;
+        return Object.assign({}, state, auth);
+
+      case 'SIGNOUT_SUCCESS':
+        return Object.assign({}, state, { user: undefined });
+
+      default:
+        return state;
     }
   };
 
   const appReducer = (state, action) => {
     if (!state) return initialState;
 
-    const speakers = speakersReducer(state.speakers, action);
-
-    return { speakers }
+    return {
+      speakers: speakersReducer(state.speakers, action),
+      auth: authReducer(state.auth, action),
+    };
   };
 
   const store = Redux.createStore(appReducer);
@@ -62,5 +88,52 @@
         });
       });
     }
-  }
+  };
+
+  const authActions = {
+    provider: new firebase.auth.GoogleAuthProvider(),
+    getCurrentUser: function () {
+        console.log('getCurrentUser');
+      const user = firebase.auth().currentUser;
+      console.log('getCurrentUser', user);
+      if (user) {
+        store.dispatch({
+          type: 'SIGNIN_SUCCESS',
+          data: user,
+        });
+      } else {
+        store.dispatch({
+          type: 'SIGNIN_SUCCESS',
+          data: user,
+        });
+      }
+    },
+    signIn: function () {
+      firebase.auth().signInWithPopup(this.provider)
+        .then(result => {
+          store.dispatch({
+            type: 'SIGNIN_SUCCESS',
+            data: result.user,
+          });
+        })
+        .catch(error => {
+          store.dispatch({
+            type: 'SIGNIN_FAILURE',
+            data: error,
+          });
+        });
+    },
+    signOut: function () {
+      firebase.auth().signOut()
+        .then(() => {
+          this.getCurrentUser();
+        })
+        .catch(error => {
+          store.dispatch({
+            type: 'SIGNIN_FAILURE',
+            data: error,
+          });
+        });
+    },
+  };
 </script>
