@@ -43,7 +43,7 @@
     <!--<paper-toast id="toast" horizontal-align="right" vertical-align="top" vertical-offset="90"></paper-toast>-->
 
     <div class="card">
-      <!--<paper-icon-button icon="icons:save" on-tap="save"></paper-icon-button>-->
+      <paper-icon-button icon="icons:save" on-tap="handleSave"></paper-icon-button>
       <!--<paper-icon-button icon="icons:delete" on-tap="destroy"></paper-icon-button>-->
 
       <paper-input label="Name" value="{{data.name}}"></paper-input>
@@ -69,8 +69,6 @@
 
       <paper-textarea label="Bio" value="{{data.bio}}"></paper-textarea>
     </div>
-
-
   </template>
 
   <script>
@@ -97,6 +95,10 @@
 
       _dataChanged (speaker) {
         this.data = Object.assign({}, speaker);
+      }
+
+      handleSave () {
+        this.dispatchEvent(new CustomEvent('save', { detail: this.data }));
       }
     }
 

@@ -11,7 +11,7 @@
       }
     </style>
 
-    <speaker-profile-form speaker="[[speaker]]"></speaker-profile-form>
+    <speaker-profile-form speaker="[[speaker]]" on-save="onSave"></speaker-profile-form>
   </template>
   <script>
     class SpeakerPage extends ReduxMixin(Polymer.Element) {
@@ -39,6 +39,10 @@
 
       _idChanged (id) {
         speakerActions.fetchSpeaker(id);
+      }
+
+      onSave (arg) {
+        speakerActions.updateSpeaker(this.id, arg.detail);
       }
     }
 

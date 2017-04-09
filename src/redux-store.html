@@ -24,6 +24,7 @@
         return state;
 
       case 'FETCH_SPEAKER_SUCCESS':
+      case 'UPDATE_SPEAKER_SUCCESS':
         const speaker = action.data;
         return Object.assign({}, state, { speaker });
 
@@ -72,14 +73,12 @@
   const speakerActions = {
     fetchSpeakers: () => {
       firebase.database().ref('/speakers').once('value', snapshot => {
-
         store.dispatch({
           type: 'FETCH_SPEAKERS_SUCCESS',
           data: snapshot.val()
         });
       });
     },
-
     fetchSpeaker: (key) => {
       firebase.database().ref(`/speakers/${key}`).once('value', snapshot => {
         store.dispatch({
@@ -87,7 +86,11 @@
           data: snapshot.val()
         });
       });
-    }
+    },
+    updateSpeaker: (key, data) => {
+      firebase.database().ref(`/speakers/${key}`).set(data);
+      speakerActions.fetchSpeaker(key);
+    },
   };
 
   const authActions = {
