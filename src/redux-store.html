@@ -2,13 +2,13 @@
 
 <script>
   const initialState = {
-    speakers: {
-      speakers: [],
-      speaker: undefined
-    },
     auth: {
       user: undefined,
       error: undefined,
+    },
+    speakers: {
+      speakers: [],
+      speaker: undefined
     },
   };
 
@@ -55,8 +55,8 @@
     if (!state) return initialState;
 
     return {
-      speakers: speakersReducer(state.speakers, action),
       auth: authReducer(state.auth, action),
+      speakers: speakersReducer(state.speakers, action),
     };
   };
 

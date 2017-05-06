@@ -36,6 +36,29 @@
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        border-radius: 50%;
+      }
+      .drawer-list {
+        margin: 0 20px;
+      }
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 40px;
+      }
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
     </style>
     <app-location route="{{route}}"></app-location>
     <app-route
@@ -49,32 +72,8 @@
     </template>
 
     <template is="dom-if" if="{{user}}">
-      <app-drawer-layout fullbleed force-narrow>
-
-        <!-- Main content -->
-        <app-header-layout has-scrolling-region>
-          <app-header condenses reveals effects="waterfall">
-            <app-toolbar>
-              <!--<paper-icon-button icon="menu" on-tap="toggleDrawer"></paper-icon-button>-->
-              <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-              <div main-title>Tardis X [[user.displayName]]</div>
-
-              <paper-icon-button icon="add">+</paper-icon-button>
-              <paper-icon-button
-                icon="[[computeLockIcon(user)]]"
-
-                on-tap="signOut">
-                <!--disabled="[[!signedIn]]"-->
-              </paper-icon-button>
-            </app-toolbar>
-          </app-header>
-
-          <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
-            <tardis-speakers name="speakers" route="[[subroute]]"></tardis-speakers>
-          </iron-pages>
-
-        </app-header-layout>
-        <app-drawer swipe-open id="appDrawer">
+      <app-drawer-layout force-narrow>
+        <app-drawer swipe-open id="appDrawer" slot="drawer">
           <app-toolbar><div main-title>Tardis X</div></app-toolbar>
           <iron-selector
             selected="[[page]]"
@@ -89,12 +88,33 @@
           </iron-selector>
 
         </app-drawer>
+
+        <app-header-layout>
+          <app-header slot="header" fixed condenses>
+            <app-toolbar sticky>
+              <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+              <div main-title>Tardis X</div>
+
+              <paper-icon-button icon="add">+</paper-icon-button>
+              <paper-icon-button
+                icon="[[computeLockIcon(user)]]"
+
+                on-tap="signOut">
+                <!--disabled="[[!signedIn]]"-->
+              </paper-icon-button>
+              <span class="avatar" style="background-image: url([[user.photoURL]]);"></span>
+            </app-toolbar>
+          </app-header>
+
+          <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
+            <tardis-speakers name="speakers" route="[[subroute]]"></tardis-speakers>
+          </iron-pages>
+        </app-header-layout>
       </app-drawer-layout>
     </template>
 
   </template>
   <script>
-//    class TardisApp extends Polymer.Element {
     class TardisApp extends ReduxMixin(Polymer.Element) {
       static get is() {
         return 'tardis-app'
@@ -103,12 +123,12 @@
       static get properties() {
         return {
           page: {
-            type: String
+            type: String,
           },
           user: {
             type: Object,
-            statePath: 'auth.user'
-          }
+            statePath: 'auth.user',
+          },
         };
       }
 
@@ -129,10 +149,6 @@
 
       _routePageChanged(page) {
         this.page = page || 'speakers';
-      }
-
-      toggleDrawer () {
-        this.$.appDrawer.toggle();
       }
 
       login () {
