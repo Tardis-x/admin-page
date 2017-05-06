@@ -3,12 +3,12 @@
 <script>
   const initialState = {
     auth: {
-      user: undefined,
-      error: undefined,
+      user: null,
+      error: null,
     },
     speakers: {
       speakers: [],
-      speaker: undefined
+      speaker: null
     },
   };
 
@@ -34,6 +34,7 @@
   };
 
   const authReducer = (state, action) => {
+      console.log(action);
     switch (action.type) {
       case 'SIGNIN_SUCCESS':
         const user = action.data;
@@ -44,7 +45,7 @@
         return Object.assign({}, state, auth);
 
       case 'SIGNOUT_SUCCESS':
-        return Object.assign({}, state, { user: undefined });
+        return Object.assign({}, state, { user: null });
 
       default:
         return state;
@@ -60,7 +61,7 @@
     };
   };
 
-  const store = Redux.createStore(appReducer);
+  const store = Redux.createStore(appReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
   const ReduxMixin = PolymerRedux(store);
 
 //  firebase.database().ref('/speakers').on('value', snapshot => {
@@ -95,21 +96,20 @@
 
   const authActions = {
     provider: new firebase.auth.GoogleAuthProvider(),
-    getCurrentUser: function () {
-        console.log('getCurrentUser');
-      const user = firebase.auth().currentUser;
-      console.log('getCurrentUser', user);
-      if (user) {
-        store.dispatch({
-          type: 'SIGNIN_SUCCESS',
-          data: user,
-        });
-      } else {
-        store.dispatch({
-          type: 'SIGNIN_SUCCESS',
-          data: user,
-        });
-      }
+    initListeners: function () {
+      firebase.auth().onAuthStateChanged(user => {
+        console.log(user);
+        if (user) {
+          store.dispatch({
+            type: 'SIGNIN_SUCCESS',
+            data: user,
+          });
+        } else {
+          store.dispatch({
+            type: 'SIGNOUT_SUCCESS',
+          });
+        }
+      });
     },
     signIn: function () {
       firebase.auth().signInWithPopup(this.provider)

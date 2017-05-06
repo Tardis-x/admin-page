@@ -8,13 +8,48 @@
       :host {
         display: block;
       }
-      .card {
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-        padding: 16px;
-        margin: 24px;
-        border-radius: 5px;
-        background-color: #fff;
-        color: #757575;
+      .list-item {
+        background: #fff;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        /*display: table;*/
+        height: 56px;
+        table-layout: fixed;
+        -webkit-transition: .1s all;
+        transition: .1s all;
+        width: 100%;
+        /**/
+        /*height: 56px;*/
+        /*!*box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);*!*/
+        /*!*padding: 16px;*!*/
+        /*margin: 0;*/
+        /*!*border-radius: 5px;*!*/
+        /*!*background-color: #fff;*!*/
+        /*background-color: #aaa;*/
+        /*color: #757575;*/
+      }
+      .list-item:hover {
+        background-color: #f2f2f2;
+      }
+      .list-item .cell {
+        line-height: 56px;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        /*display: table-cell;*/
+        font-size: 13px;
+        overflow: hidden;
+        padding: 4px;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+      .list-item .photo {
+        padding-left: 12px;
+        width: 68px;
+      }
+      .list-item .photo img {
+        border-radius: 50%;
+        vertical-align: middle;
       }
       .card > *{
         line-height: 40px;
@@ -27,11 +62,14 @@
     </style>
     <template is="dom-repeat" items="[[speakers]]">
       <div>
-        <div class="card layout horizontal">
-          <div class="flex">[[item.name]]</div>
-          <div class="flex">[[item.company]]</div>
-          <div class="flex">[[item.title]]</div>
-          <div>
+        <div class="list-item layout horizontal">
+          <div class="cell photo">
+            <img width="36" height="36" src="https://devfest.gdg.org.ua[[item.photoUrl]]" />
+          </div>
+          <div class="cell flex">[[item.name]]</div>
+          <div class="cell flex">[[item.company]]</div>
+          <div class="cell flex">[[item.title]]</div>
+          <div class="cell">
             <a href="/speakers/[[item.$key]]" tabindex="-1">Edit</a>
           </div>
         </div>

@@ -67,12 +67,12 @@
       data="{{routeData}}"
       tail="{{subroute}}"></app-route>
 
-    <template is="dom-if" if="{{!user}}">
+    <template is="dom-if" if="[[!user]]">
       <paper-button on-tap="login">Login</paper-button>
     </template>
 
-    <template is="dom-if" if="{{user}}">
-      <app-drawer-layout force-narrow>
+    <template is="dom-if" if="[[user]]">
+      <app-drawer-layout force-narrow fullbleed>
         <app-drawer swipe-open id="appDrawer" slot="drawer">
           <app-toolbar><div main-title>Tardis X</div></app-toolbar>
           <iron-selector
@@ -89,8 +89,8 @@
 
         </app-drawer>
 
-        <app-header-layout>
-          <app-header slot="header" fixed condenses>
+        <app-header-layout fullbleed has-scrolling-region>
+          <app-header slot="header" fixed>
             <app-toolbar sticky>
               <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
               <div main-title>Tardis X</div>
@@ -134,13 +134,13 @@
 
       static get observers() {
         return [
-          '_routePageChanged(routeData.page)'
+          '_routePageChanged(routeData.page)',
         ];
       }
 
       connectedCallback() {
         super.connectedCallback();
-        authActions.getCurrentUser();
+        authActions.initListeners();
       }
 
       computeLockIcon() {
@@ -157,7 +157,10 @@
 
       signOut () {
         authActions.signOut();
-        console.log('signOut');
+      }
+
+      isUser(user) {
+        return user || false;
       }
     }
 
