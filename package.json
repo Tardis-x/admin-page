@@ -4,12 +4,15 @@
   "description": "## Deploy ``` $ polymer build $ firebase deploy ```",
   "main": "index.js",
   "scripts": {
-    "preinstall": "rm -rf bower_components && rm -rf node_modules",
-    "postinstall": "bower install",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf bower_components && rm -rf node_modules && rm -rf build",
     "build": "polymer build",
-    "start": "polymer serve"
+    "clean": "rm -rf bower_components && rm -rf node_modules && rm -rf build",
+    "deploy": "firebase deploy",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "postinstall": "bower install",
+    "preinstall": "rm -rf bower_components && rm -rf node_modules",
+    "start": "polymer serve",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
