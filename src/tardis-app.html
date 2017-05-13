@@ -16,6 +16,7 @@
 <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="tardis-login.html">
 
 <link rel="import" href="/src/speakers/index.html">
 <link rel="import" href="/src/organizations/index.html">
@@ -70,7 +71,7 @@
       tail="{{subroute}}"></app-route>
 
     <template is="dom-if" if="[[!user]]">
-      <paper-button on-tap="login">Login</paper-button>
+      <tardis-login on-login="login"></tardis-login>
     </template>
 
     <template is="dom-if" if="[[user]]">

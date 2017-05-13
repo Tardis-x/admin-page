@@ -1,0 +1,51 @@
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="tardis-login">
+  <template>
+    <style>
+      :host {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--primary-color);
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1;
+        color: white;
+
+        @apply(--layout);
+        @apply(--layout-center-center);
+      }
+
+      paper-button > * {
+        vertical-align: middle;
+        text-transform: none;
+      }
+    </style>
+    <paper-button on-tap="handleLogin">
+      <iron-icon icon="account-circle"></iron-icon>
+      <span>Sign in with Google</span>
+    </paper-button>
+  </template>
+  <script>
+    class TardisLogin extends Polymer.Element {
+      static get is() {
+        return 'tardis-login'
+      }
+
+      handleLogin () {
+        this.dispatchEvent(new CustomEvent('login'));
+      }
+    }
+
+    customElements.define(TardisLogin.is, TardisLogin);
+  </script>
+</dom-module>
