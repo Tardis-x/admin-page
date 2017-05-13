@@ -1,0 +1,74 @@
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/app-route/app-route.html">
+<link rel="import" href="/bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="list.html">
+<link rel="import" href="organization.html">
+
+<dom-module id="tardis-organizations">
+  <template>
+    <style>
+      paper-dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 0;
+        margin: 0;
+        z-index:10000;
+      }
+    </style>
+
+    <app-route
+      route="{{route}}"
+      pattern="/:id"
+      data="{{routeData}}"></app-route>
+
+    <app-route
+      route="{{route}}"
+      pattern="/"
+      data="{{routeData}}"></app-route>
+
+    <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
+      <organizations-list name="list"></organizations-list>
+      <organization-page name="organization" id="[[routeData.id]]"></organization-page>
+    </iron-pages>
+
+  </template>
+  <script>
+    class TardisOrganizations extends Polymer.Element {
+      static get is() {
+        return 'tardis-organizations'
+      }
+
+      static get properties() {
+        return {
+          page: {
+            type: String
+          },
+          route: {
+            type: Object
+          }
+        };
+      }
+
+      static get observers() {
+        return [
+          '_routePageChanged(route)'
+        ];
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+      }
+
+      _routePageChanged(route) {
+          console.log(this.route, this.routeData);
+        this.page = this.route.path ? 'organization' : 'list';
+      }
+    }
+
+    customElements.define(TardisOrganizations.is, TardisOrganizations);
+  </script>
+</dom-module>

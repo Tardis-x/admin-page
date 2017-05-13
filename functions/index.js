@@ -26,8 +26,6 @@ exports.initUserData = functions.auth.user().onCreate(event => {
 exports.resizeOrganizationLogo = functions.storage.object().onChange(event => {
   const { contentType, resourceState, metadata } = event.data;
 
-// console.log(functions.config().firebase);
-
   // Exit if this is a move or deletion event.
   if (resourceState === 'not_exists') {
     console.log('This is a deletion event.');
@@ -60,17 +58,5 @@ exports.resizeOrganizationLogo = functions.storage.object().onChange(event => {
       .then(() => bucket.upload(tempFilePath, { destination: newFilePath, metadata: { metadata: { dbRef } } }))
       .then(() => bucket.file(newFilePath).makePublic())
       .then(() => admin.database().ref(dbRef).set(getPublicUrl(event.data.bucket, newFilePath)));
-
-        // .then(() => {
-        //   console.log('Image downloaded locally to', tempFilePath);
-        //   return spawn('convert', [tempFilePath, '-resize', 'x60>', tempFilePath])
-        //     .then(() => spawn('convert', [tempFilePath, '-strip', '-interlace', 'Plane', '-quality', '85%', tempFilePath]))
-        //     .then(() => {
-        //       console.log('Thumbnail created at', tempFilePath);
-        //
-        //       return bucket.upload(tempFilePath, { destination: newFilePath });
-        //     });
-        // });
-
   }
 });

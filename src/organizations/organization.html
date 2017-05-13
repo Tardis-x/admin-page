@@ -1,0 +1,134 @@
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/src/redux-store.html">
+
+<!--<link rel="import" href="components/organization-form.html">-->
+
+<dom-module id="organization-page">
+  <template>
+    <style>
+      :host {
+        display: block;
+        padding: 24px;
+      }
+
+      .logo {
+
+      }
+
+      .logo img {
+        cursor: pointer;
+      }
+
+      #logoFile {
+        /*opacity: 0;*/
+        display: none;
+      }
+    </style>
+
+    <paper-icon-button icon="icons:save" on-tap="handleSave"></paper-icon-button>
+
+    <!--<paper-icon-button icon="icons:delete" on-tap="destroy"></paper-icon-button>-->
+
+    <paper-input label="Name" value="{{data.name}}"></paper-input>
+
+    <div class="logo">
+      <img height="100" src="[[data.logoUrl]]" on-click="handleChangeLogo" />
+    </div>
+
+    <input type="file" id="logoFile" on-change="handleFile">
+
+    <paper-input label="Company URL" value="{{data.url}}"></paper-input>
+  </template>
+  <script>
+    class OrganizationPage extends ReduxMixin(Polymer.Element) {
+      static get is() {
+        return 'organization-page'
+      }
+
+      static get properties() {
+        return {
+          data: {
+            type: Object,
+            value: {}
+          },
+          id: {
+            type: String
+          },
+          organization: {
+            type: Object,
+            statePath: 'organizations.organization'
+          }
+        };
+      }
+
+      static get observers() {
+        return [
+          '_idChanged(id)',
+          '_dataChanged(organization)',
+        ];
+      }
+
+      _dataChanged (organization) {
+        this.data = Object.assign({}, organization);
+        this.$.logoFile.value = null;
+      }
+
+      _idChanged (id) {
+        if (id !== 'new') {
+          organizationsActions.fetchOrganization(id);
+        }
+      }
+
+      handleSave () {
+        if (this.id !== 'new') {
+          organizationsActions.updateOrganization(this.id, this.data);
+        } else {
+          organizationsActions.createOrganization(this.data);
+        }
+      }
+
+      handleChangeLogo () {
+        this.$.logoFile.click();
+      }
+
+      handleFile (ev) {
+        if (ev.target && ev.target.files.length) {
+          const file = ev.target.files[0];
+          organizationsActions.uploadOrganizationLogo(this.id, file);
+//
+//
+//          const timestamp = `${Date.now()}${new Date().getUTCMilliseconds()}`;
+//
+//          const storageRef = firebase.storage().ref('/images/organizations/');
+//          const metadata = {
+//            contentType: file.type,
+//            customMetadata: {
+//              dbRef: '/organizations/1/logoUrl' ,
+//            },
+//          };
+//
+//          storageRef
+//            .child(file.name.replace(/^.*(\.[^.]*)$/, `${timestamp}_original$1`))
+//            .put(file, metadata)
+//            .then(snapshot => {
+//              console.log('Uploaded', snapshot.totalBytes, 'bytes.');
+//              console.log(snapshot.metadata);
+//              var url = snapshot.downloadURL;
+//              console.log('File available at', url);
+//              // [START_EXCLUDE]
+////              document.getElementById('linkbox').innerHTML = '<a href="' +  url + '">Click For File</a>';
+//              // [END_EXCLUDE]
+//            })
+//            .catch(error => {
+//              // [START onfailure]
+//              console.error('Upload failed:', error);
+//              // [END onfailure]
+//            });
+//          // [END oncomplete]
+        }
+      }
+    }
+
+    customElements.define(OrganizationPage.is, OrganizationPage);
+  </script>
+</dom-module>

@@ -1,8 +1,11 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="/src/redux-store.html">
 <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="/bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
 
-<dom-module id="speakers-list">
+
+<dom-module id="organizations-list">
   <template>
     <style include="iron-flex">
       :host {
@@ -33,16 +36,22 @@
         vertical-align: middle;
         white-space: nowrap;
       }
-      .list-item .photo {
-        padding-left: 12px;
-        width: 68px;
+      .list-item .name {
+        font-weight: 500;
       }
-      .list-item .photo img {
-        border-radius: 50%;
+      .list-item .logo {
+        padding-left: 12px;
+      }
+      .list-item .logo img {
+
         vertical-align: middle;
       }
-      .card > *{
-        line-height: 40px;
+
+      paper-fab {
+        position: fixed;
+        right: 25px;
+        bottom: 30px;
+        background-color: #2196F3;
       }
       h1 {
         font-size: 22px;
@@ -50,44 +59,52 @@
         color: #212121;
       }
     </style>
-    <template is="dom-repeat" items="[[speakers]]">
+
+    <template is="dom-repeat" items="[[organizations]]">
       <div>
         <div class="list-item layout horizontal">
-          <div class="cell photo">
-            <img width="36" height="36" src="https://devfest.gdg.org.ua[[item.photoUrl]]" />
+          <div class="cell logo">
+            <img height="36" src="[[item.logoUrl]]" />
           </div>
-          <div class="cell flex">[[item.name]]</div>
-          <div class="cell flex">[[item.company]]</div>
-          <div class="cell flex">[[item.title]]</div>
+          <div class="cell name flex">[[item.name]]</div>
           <div class="cell">
-            <a href="/speakers/[[item.$key]]" tabindex="-1">Edit</a>
+            <a href="/organizations/[[item.$key]]" tabindex="-1">Edit</a>
           </div>
         </div>
       </div>
     </template>
+    <paper-fab icon="add" href="/organizations/new"></paper-fab>
   </template>
   <script>
-    class SpeakersList extends ReduxMixin(Polymer.Element) {
+    class OrganizationsList extends ReduxMixin(Polymer.Element) {
       static get is() {
-        return 'speakers-list'
+        return 'organizations-list'
       }
 
       static get properties() {
         return {
-          speakers: {
+          organizations: {
             type: Array,
-            statePath: 'speakers.speakers'
+            statePath: 'organizations.organizations'
+          },
+          // ToDo: show error
+          organizationsError: {
+            statePath: 'organizations.organizationsError'
           }
         };
       }
 
       connectedCallback() {
         super.connectedCallback();
-
-        speakerActions.fetchSpeakers();
+        organizationsActions.fetchOrganizations();
       }
+
+//      attributeChanged() {
+//
+//        organizationsActions.fetchOrganizations();
+//      }
     }
 
-    customElements.define(SpeakersList.is, SpeakersList);
+    customElements.define(OrganizationsList.is, OrganizationsList);
   </script>
 </dom-module>

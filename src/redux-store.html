@@ -1,4 +1,6 @@
-<link rel="import" href="/bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
+<script src="redux/constants.js" type="text/javascript"></script>
+<script src="redux/reducer.js" type="text/javascript"></script>
 
 <script>
   const initialState = {
@@ -6,10 +8,33 @@
       user: null,
       error: null,
     },
+    organizations: {
+      organization: null,
+      organizations: [],
+      organizationsError: null,
+    },
     speakers: {
       speakers: [],
       speaker: null
     },
+  };
+
+  const authReducer = (state, action) => {
+    switch (action.type) {
+      case 'SIGNIN_SUCCESS':
+        const user = action.data;
+        return Object.assign({}, state, { user });
+
+      case 'SIGNIN_FAILURE':
+        const auth = action.data;
+        return Object.assign({}, state, auth);
+
+      case 'SIGNOUT_SUCCESS':
+        return Object.assign({}, state, { user: null });
+
+      default:
+        return state;
+    }
   };
 
   const speakersReducer = (state, action) => {
@@ -33,31 +58,13 @@
     }
   };
 
-  const authReducer = (state, action) => {
-      console.log(action);
-    switch (action.type) {
-      case 'SIGNIN_SUCCESS':
-        const user = action.data;
-        return Object.assign({}, state, { user });
-
-      case 'SIGNIN_FAILURE':
-        const auth = action.data;
-        return Object.assign({}, state, auth);
-
-      case 'SIGNOUT_SUCCESS':
-        return Object.assign({}, state, { user: null });
-
-      default:
-        return state;
-    }
-  };
-
   const appReducer = (state, action) => {
     if (!state) return initialState;
 
     return {
       auth: authReducer(state.auth, action),
       speakers: speakersReducer(state.speakers, action),
+      organizations: organizationsReducer(state.organizations, action),
     };
   };
 
@@ -140,3 +147,5 @@
     },
   };
 </script>
+
+<script src="redux/actions.js" type="text/javascript"></script>
