@@ -73,7 +73,7 @@
         </div>
       </div>
     </template>
-    <paper-fab icon="add" href="/organizations/new"></paper-fab>
+    <paper-fab icon="add" on-tap="handleNew"></paper-fab>
   </template>
   <script>
     class OrganizationsList extends ReduxMixin(Polymer.Element) {
@@ -99,10 +99,10 @@
         organizationsActions.fetchOrganizations();
       }
 
-//      attributeChanged() {
-//
-//        organizationsActions.fetchOrganizations();
-//      }
+      handleNew() {
+        window.history.pushState({}, null, '/organizations/new');
+        window.dispatchEvent(new CustomEvent('location-changed'));
+      }
     }
 
     customElements.define(OrganizationsList.is, OrganizationsList);
