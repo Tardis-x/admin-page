@@ -106,6 +106,37 @@ const organizationsActions = {
     speakerActions.fetchSpeaker(key);
   },
   uploadOrganizationLogo: (key, file) => {
-    console.log('fileName', file.name);
-  }
+    console.log('Uploading fileName', file.name);
+
+    const timestamp = `${Date.now()}${new Date().getUTCMilliseconds()}`;
+
+    const storageRef = firebase.storage().ref('/images/organizations/');
+    const metadata = {
+      contentType: file.type,
+      customMetadata: {
+        dbRef: `/organizations/${key}/logoUrl`,
+      },
+    };
+
+    storageRef
+      .child(file.name.replace(/^.*(\.[^.]*)$/, `${timestamp}_original$1`))
+      .put(file, metadata)
+      .then(snapshot => {
+        const url = snapshot.downloadURL;
+
+        store.dispatch(organizationsActions.uploadOrganizationLogoSuccess({ url }));
+      })
+      .catch(error => {
+        console.error('Upload failed:', error);
+        store.dispatch(organizationsActions.uploadOrganizationLogoFailure(error));
+      });
+  },
+  uploadOrganizationLogoFailure: (error) => ({
+    type: UPLOAD_ORGANIZATION_LOGO_FAILURE,
+    data: error,
+  }),
+  uploadOrganizationLogoSuccess: (data) => ({
+    type: UPLOAD_ORGANIZATION_LOGO_SUCCESS,
+    data,
+  }),
 };
