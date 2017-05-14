@@ -19,7 +19,7 @@
 
     <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
       <speakers-list name="list"></speakers-list>
-      <speaker-page name="speaker" id="[[routeData.id]]"></speaker-page>
+      <speaker-page name="speaker" key="[[routeData.id]]"></speaker-page>
     </iron-pages>
   </template>
   <script>
@@ -35,13 +35,16 @@
           },
           route: {
             type: Object
+          },
+          routeData: {
+            type: Object
           }
         };
       }
 
       static get observers() {
         return [
-          '_routePageChanged(route)'
+          '_routePageChanged(route)',
         ];
       }
 

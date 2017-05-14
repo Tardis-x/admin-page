@@ -32,7 +32,7 @@
 
     <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
       <organizations-list name="list"></organizations-list>
-      <organization-page name="organization" id="[[routeData.id]]"></organization-page>
+      <organization-page name="organization" key="[[routeData.id]]"></organization-page>
     </iron-pages>
 
   </template>
@@ -64,7 +64,6 @@
       }
 
       _routePageChanged(route) {
-          console.log(this.route, this.routeData);
         this.page = this.route.path ? 'organization' : 'list';
       }
     }

@@ -1,6 +1,8 @@
-<link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="/src/redux-store.html">
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="/bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
 
 <dom-module id="speakers-list">
   <template>
@@ -49,12 +51,18 @@
         margin: 16px 0;
         color: #212121;
       }
+      paper-fab {
+        position: fixed;
+        right: 25px;
+        bottom: 30px;
+        background-color: #2196F3;
+      }
     </style>
     <template is="dom-repeat" items="[[speakers]]">
       <div>
         <div class="list-item layout horizontal">
           <div class="cell photo">
-            <img width="36" height="36" src="https://devfest.gdg.org.ua[[item.photoUrl]]" />
+            <img width="36" height="36" src="[[item.photoUrl]]" />
           </div>
           <div class="cell flex">[[item.name]]</div>
           <div class="cell flex">[[item.company]]</div>
@@ -65,6 +73,7 @@
         </div>
       </div>
     </template>
+    <paper-fab icon="add" on-tap="handleNew"></paper-fab>
   </template>
   <script>
     class SpeakersList extends ReduxMixin(Polymer.Element) {
@@ -84,7 +93,12 @@
       connectedCallback() {
         super.connectedCallback();
 
-        speakerActions.fetchSpeakers();
+        this.dispatch(speakersActions.fetchSpeakers());
+      }
+
+      handleNew() {
+        window.history.pushState({}, null, '/speakers/new');
+        window.dispatchEvent(new CustomEvent('location-changed'));
       }
     }
 

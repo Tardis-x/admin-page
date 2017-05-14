@@ -2,6 +2,7 @@
 <script src="../node_modules/redux-thunk/dist/redux-thunk.js" type="text/javascript"></script>
 
 <script src="redux/constants.js" type="text/javascript"></script>
+<script src="redux/actions.js" type="text/javascript"></script>
 <script src="redux/reducer.js" type="text/javascript"></script>
 
 <script>
@@ -18,7 +19,9 @@
     },
     speakers: {
       speakers: [],
-      speaker: null
+      speakersFetching: false,
+      speaker: null,
+      speakerFetching: false,
     },
   };
 
@@ -34,27 +37,6 @@
 
       case 'SIGNOUT_SUCCESS':
         return Object.assign({}, state, { user: null });
-
-      default:
-        return state;
-    }
-  };
-
-  const speakersReducer = (state, action) => {
-    switch (action.type) {
-      case 'FETCH_SPEAKERS_SUCCESS':
-        const speakers = Object.keys(action.data)
-          .map(key => Object.assign({}, action.data[key], { $key: key }) );
-
-        return Object.assign({}, state, { speakers });
-
-      case 'FETCH_SPEAKER':
-        return state;
-
-      case 'FETCH_SPEAKER_SUCCESS':
-      case 'UPDATE_SPEAKER_SUCCESS':
-        const speaker = action.data;
-        return Object.assign({}, state, { speaker });
 
       default:
         return state;
@@ -83,44 +65,12 @@
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   );
 
-//  Redux.connect
   const ReduxMixin = PolymerRedux(store);
-
-//  firebase.database().ref('/speakers').on('value', snapshot => {
-//    store.dispatch({
-//      type: 'FETCH_SPEAKERS',
-//      data: snapshot.val()
-//    });
-//  });
-
-  const speakerActions = {
-    fetchSpeakers: () => {
-      firebase.database().ref('/speakers').once('value', snapshot => {
-        store.dispatch({
-          type: 'FETCH_SPEAKERS_SUCCESS',
-          data: snapshot.val()
-        });
-      });
-    },
-    fetchSpeaker: (key) => {
-      firebase.database().ref(`/speakers/${key}`).once('value', snapshot => {
-        store.dispatch({
-          type: 'FETCH_SPEAKER_SUCCESS',
-          data: snapshot.val()
-        });
-      });
-    },
-    updateSpeaker: (key, data) => {
-      firebase.database().ref(`/speakers/${key}`).set(data);
-      speakerActions.fetchSpeaker(key);
-    },
-  };
 
   const authActions = {
     provider: new firebase.auth.GoogleAuthProvider(),
     initListeners: function () {
       firebase.auth().onAuthStateChanged(user => {
-        console.log(user);
         if (user) {
           store.dispatch({
             type: 'SIGNIN_SUCCESS',
@@ -163,4 +113,3 @@
   };
 </script>
 
-<script src="redux/actions.js" type="text/javascript"></script>

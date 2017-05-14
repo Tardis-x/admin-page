@@ -11,10 +11,6 @@
         padding: 24px;
       }
 
-      .logo {
-
-      }
-
       .logo img {
         cursor: pointer;
       }
@@ -24,7 +20,6 @@
       }
 
       #logoFile {
-        /*opacity: 0;*/
         display: none;
       }
       paper-button.indigo {
@@ -73,7 +68,7 @@
     </div>
 
     <div class="row">
-      <paper-button class="indigo" on-tap="handleChangeLogo" disabled$="[[isNew(id)]]">Change Logo</paper-button>
+      <paper-button class="indigo" on-tap="handleChangeLogo" disabled$="[[isNew(key)]]">Change Logo</paper-button>
     </div>
 
     <div class="row">
@@ -92,7 +87,7 @@
             type: Object,
             value: {}
           },
-          id: {
+          key: {
             type: String
           },
           organization: {
@@ -108,7 +103,7 @@
 
       static get observers() {
         return [
-          '_idChanged(id)',
+          '_keyChanged(key)',
           '_dataChanged(organization)',
         ];
       }
@@ -118,19 +113,20 @@
         this.$.logoFile.value = null;
       }
 
-      _idChanged (id) {
-        if (!this.isNew(id)) {
-          this.dispatch(organizationsActions.fetchOrganization(id));
+      _keyChanged (key) {
+          console.log('wtf', key);
+        if (!this.isNew(key)) {
+          this.dispatch(organizationsActions.fetchOrganization(key));
         }
       }
 
-      isNew(id) {
-        return id === 'new';
+      isNew(key) {
+        return key === 'new';
       }
 
       handleSave () {
-        if (!this.isNew(this.id)) {
-          this.dispatch(organizationsActions.updateOrganization(this.id, this.data));
+        if (!this.isNew(this.key)) {
+          this.dispatch(organizationsActions.updateOrganization(this.key, this.data));
         } else {
           this.dispatch(organizationsActions.createOrganization(this.data));
         }
@@ -143,7 +139,7 @@
       handleFile (ev) {
         if (ev.target && ev.target.files.length) {
           const file = ev.target.files[0];
-          this.dispatch(organizationsActions.uploadOrganizationLogo(this.id, file));
+          this.dispatch(organizationsActions.uploadOrganizationLogo(this.key, file));
         }
       }
     }
