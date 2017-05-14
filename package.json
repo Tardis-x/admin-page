@@ -27,6 +27,7 @@
   "homepage": "https://github.com/Tardis-x/web#readme",
   "dependencies": {
     "polymer-cli": "^0.18.0-pre.12",
-    "redux": "^3.6.0"
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.2.0"
   }
 }

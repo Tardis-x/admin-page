@@ -10,34 +10,63 @@ const createOrganizationFailure = (error) => ({
 
 
 const organizationsActions = {
-  createOrganization: (data) => {
-    firebase.database()
+  createOrganization: (data) => (dispatch) => {
+    dispatch({ type: CREATE_ORGANIZATION });
+
+    return firebase.database()
       .ref(`/organizations`)
       .push(data)
       .then(d => store.dispatch(createOrganizationSuccess(d)))
       .catch(error => store.dispatch(createOrganizationFailure(error)));
   },
-  fetchOrganizations: () => {
-    firebase.database().ref('/organizations').once('value', snapshot => {
-      store.dispatch({
+  fetchOrganizations: () => (dispatch) => {
+    dispatch({ type: FETCH_ORGANIZATIONS });
+
+    return firebase.database().ref('/organizations').once('value', snapshot => {
+      dispatch({
         type: FETCH_ORGANIZATIONS_SUCCESS,
         data: snapshot.val()
       });
     });
   },
-  fetchOrganization: (key) => {
-    firebase.database().ref(`/organizations/${key}`).once('value', snapshot => {
-      store.dispatch({
+  fetchOrganization: (key) => (dispatch) => {
+    dispatch({ type: FETCH_ORGANIZATION });
+
+    return firebase.database().ref(`/organizations/${key}`).once('value', snapshot => {
+      dispatch({
         type: FETCH_ORGANIZATION_SUCCESS,
         data: snapshot.val()
       });
     });
   },
-  updateOrganization: (key, data) => {
-    firebase.database().ref(`/organizations/${key}`).set(data);
-    speakerActions.fetchSpeaker(key);
+  updateOrganization: (key, data) => (dispatch) => {
+    dispatch({ type: UPDATE_ORGANIZATION });
+
+    firebase.database().ref(`/organizations/${key}`)
+      .set(data)
+      .then(d => {
+        console.log(d);
+        dispatch(organizationsActions.updateOrganizationSuccess(d));
+        dispatch(speakerActions.fetchSpeaker(key));
+      })
+      .catch(error => {
+        dispatch(organizationsActions.updateOrganizationFailure(error));
+      });
+
   },
-  uploadOrganizationLogo: (key, file) => {
+  updateOrganizationFailure: (error) => ({
+    type: UPDATE_ORGANIZATION_FAILURE,
+    data: error,
+  }),
+  updateOrganizationSuccess: (data) => {
+    return {
+      type: UPDATE_ORGANIZATION_SUCCESS,
+      data,
+    };
+  },
+  uploadOrganizationLogo: (key, file) => (dispatch) => {
+    dispatch({ type: UPLOAD_ORGANIZATION_LOGO });
+
     console.log('Uploading fileName', file.name);
 
     const timestamp = `${Date.now()}${new Date().getUTCMilliseconds()}`;
@@ -55,19 +84,21 @@ const organizationsActions = {
       .put(file, metadata)
       .then(snapshot => {
         const url = snapshot.downloadURL;
-        store.dispatch(organizationsActions.uploadOrganizationLogoSuccess({ url }));
+        dispatch(organizationsActions.uploadOrganizationLogoSuccess({ url }));
       })
       .catch(error => {
         console.error('Upload failed:', error);
-        store.dispatch(organizationsActions.uploadOrganizationLogoFailure(error));
+        dispatch(organizationsActions.uploadOrganizationLogoFailure(error));
       });
   },
   uploadOrganizationLogoFailure: (error) => ({
     type: UPLOAD_ORGANIZATION_LOGO_FAILURE,
     data: error,
   }),
-  uploadOrganizationLogoSuccess: (data) => ({
-    type: UPLOAD_ORGANIZATION_LOGO_SUCCESS,
-    data,
-  }),
+  uploadOrganizationLogoSuccess: (data) => {
+    return {
+      type: UPLOAD_ORGANIZATION_LOGO_SUCCESS,
+      data,
+    };
+  },
 };

@@ -1,4 +1,6 @@
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
+<script src="../node_modules/redux-thunk/dist/redux-thunk.js" type="text/javascript"></script>
+
 <script src="redux/constants.js" type="text/javascript"></script>
 <script src="redux/reducer.js" type="text/javascript"></script>
 
@@ -10,6 +12,7 @@
     },
     organizations: {
       organization: null,
+      organizationLogoUploading: false,
       organizations: [],
       organizationsError: null,
     },
@@ -68,7 +71,19 @@
     };
   };
 
-  const store = Redux.createStore(appReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+//  const store = Redux.createStore(
+//    appReducer,
+//    window.ReduxThunk.default,
+//    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+//  );
+
+  const thunk = window.ReduxThunk.default;
+  const store = Redux.compose(Redux.applyMiddleware(thunk))(Redux.createStore)(
+    appReducer,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  );
+
+//  Redux.connect
   const ReduxMixin = PolymerRedux(store);
 
 //  firebase.database().ref('/speakers').on('value', snapshot => {

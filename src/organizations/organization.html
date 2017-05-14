@@ -1,5 +1,6 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="/src/redux-store.html">
 
 <dom-module id="organization-page">
@@ -18,6 +19,10 @@
         cursor: pointer;
       }
 
+      .logo paper-progress {
+        width: 100%;
+      }
+
       #logoFile {
         /*opacity: 0;*/
         display: none;
@@ -29,6 +34,14 @@
           background-color: var(--paper-pink-a200) !important;
           color: white !important;
         };
+      }
+
+      paper-button[disabled] {
+        background: #eaeaea;
+      }
+
+      paper-progress {
+        --paper-progress-active-color: var(--google-blue-500);
       }
 
       .row *:first-child{
@@ -44,9 +57,6 @@
       <paper-button icon="icons:save" on-tap="handleSave">Save</paper-button>
     </div>
 
-
-    <!--<paper-icon-button icon="icons:delete" on-tap="destroy"></paper-icon-button>-->
-
     <div class="row">
       <paper-input label="Name" value="{{data.name}}"></paper-input>
     </div>
@@ -54,12 +64,16 @@
     <div class="row">
       <div class="logo">
         <img height="100" src="[[data.logoUrl]]"  />
+
+        <template is="dom-if" if="[[logoUploading]]">
+          <paper-progress indeterminate></paper-progress>
+        </template>
       </div>
-      <input type="file" id="logoFile" on-change="handleFile">
+      <input type="file" id="logoFile" on-change="handleFile" accept="image/png,image/jpeg,image/svg+xml">
     </div>
 
     <div class="row">
-      <paper-button class="indigo" on-tap="handleChangeLogo">Change Logo</paper-button>
+      <paper-button class="indigo" on-tap="handleChangeLogo" disabled$="[[isNew(id)]]">Change Logo</paper-button>
     </div>
 
     <div class="row">
@@ -84,6 +98,10 @@
           organization: {
             type: Object,
             statePath: 'organizations.organization'
+          },
+          logoUploading: {
+            type: Boolean,
+            statePath: 'organizations.organizationLogoUploading'
           }
         };
       }
@@ -101,16 +119,20 @@
       }
 
       _idChanged (id) {
-        if (id !== 'new') {
-          organizationsActions.fetchOrganization(id);
+        if (!this.isNew(id)) {
+          this.dispatch(organizationsActions.fetchOrganization(id));
         }
       }
 
+      isNew(id) {
+        return id === 'new';
+      }
+
       handleSave () {
-        if (this.id !== 'new') {
-          organizationsActions.updateOrganization(this.id, this.data);
+        if (!this.isNew(this.id)) {
+          this.dispatch(organizationsActions.updateOrganization(this.id, this.data));
         } else {
-          organizationsActions.createOrganization(this.data);
+          this.dispatch(organizationsActions.createOrganization(this.data));
         }
       }
 
@@ -121,7 +143,7 @@
       handleFile (ev) {
         if (ev.target && ev.target.files.length) {
           const file = ev.target.files[0];
-          organizationsActions.uploadOrganizationLogo(this.id, file);
+          this.dispatch(organizationsActions.uploadOrganizationLogo(this.id, file));
         }
       }
     }

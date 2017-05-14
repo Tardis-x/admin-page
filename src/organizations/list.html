@@ -96,7 +96,7 @@
 
       connectedCallback() {
         super.connectedCallback();
-        organizationsActions.fetchOrganizations();
+        this.dispatch(organizationsActions.fetchOrganizations());
       }
 
       handleNew() {
