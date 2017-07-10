@@ -2,8 +2,8 @@
 <link rel="import" href="/src/redux-store.html">
 <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
-
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/bower_components/iron-icons/editor-icons.html">
 
 <dom-module id="organizations-list">
   <template>
@@ -16,10 +16,12 @@
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         height: 56px;
+        padding: 0 16px;
         table-layout: fixed;
         -webkit-transition: .1s all;
         transition: .1s all;
         width: 100%;
+
       }
       .list-item:hover {
         background-color: #f2f2f2;
@@ -46,7 +48,9 @@
 
         vertical-align: middle;
       }
-
+      .list-item a, .list-item a:visited {
+        color: #616161;
+      }
       paper-fab {
         position: fixed;
         right: 25px;
@@ -68,7 +72,9 @@
           </div>
           <div class="cell name flex">[[item.name]]</div>
           <div class="cell">
-            <a href="/organizations/[[item.$key]]" tabindex="-1">Edit</a>
+            <a href="/organizations/[[item.$key]]" tabindex="-1">
+              <iron-icon icon="editor:mode-edit"></iron-icon>
+            </a>
           </div>
         </div>
       </div>

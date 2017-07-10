@@ -10,5 +10,8 @@
     "bower_components/firebase/firebase.js",
     "bower_components/webcomponentsjs/webcomponents-lite.js",
     "node_modules/redux/dist/redux.js"
-  ]
+  ],
+  "lint": {
+    "rules": ["polymer-2"]
+  }
 }

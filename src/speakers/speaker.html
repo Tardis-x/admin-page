@@ -4,6 +4,10 @@
 <link rel="import" href="/bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="/bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/bower_components/neon-animation/web-animations.html">
 
 <link rel="import" href="/src/redux-store.html">
 
@@ -60,16 +64,20 @@
       <paper-input label="Name" value="{{data.name}}"></paper-input>
     </div>
 
-    <div class="row">
-      <div class="photo">
-        <img height="300" src="[[data.photoUrl]]"  />
+    
+      <div class="row">
+        <template is="dom-if" if="[[!isNew(key)]]">
+          <div class="photo">
+            <img height="300" src="[[data.photoUrl]]"  />
 
-        <template is="dom-if" if="[[photoUploading]]">
-          <paper-progress indeterminate></paper-progress>
+            <template is="dom-if" if="[[photoUploading]]">
+              <paper-progress indeterminate></paper-progress>
+            </template>
+          </div>
         </template>
+        <input type="file" id="photoFile" on-change="handleFile" accept="image/png,image/jpeg,image/svg+xml">
       </div>
-      <input type="file" id="photoFile" on-change="handleFile" accept="image/png,image/jpeg,image/svg+xml">
-    </div>
+    
 
     <div class="row">
       <paper-button class="indigo" on-tap="handleChangeLogo" disabled$="[[isNew(key)]]">Change Photo</paper-button>
@@ -80,13 +88,15 @@
     </div>
 
     <div class="row">
-      <paper-input label="Company" value="{{data.company}}"></paper-input>
-
-      <paper-input label="Company Logo" value="{{data.companyLogo}}"></paper-input>
-      <div>
-        <img width="100" height="100" src="https://devfest.gdg.org.ua[[data.companyLogo]]" />
-      </div>
+      <paper-dropdown-menu label="Company" selectedItem="{{selectedItem}}">
+        <paper-listbox slot="dropdown-content" class="dropdown-content" selected="1">
+          <paper-item>GDG Lviv</paper-item>
+          <paper-item>Another GDG Lviv</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
     </div>
+
+    
 
     <div class="row">
       <paper-input label="Title" value="{{data.title}}"></paper-input>
@@ -123,10 +133,13 @@
             type: Object,
             statePath: 'speakers.speaker'
           },
-          logoUploading: {
+          photoUploading: {
             type: Boolean,
             statePath: 'speakers.speakerPhotoUploading'
-          }
+          },
+          selectedItem: {
+            type: Object,
+          },
         };
       }
 
@@ -134,7 +147,17 @@
         return [
           '_keyChanged(key)',
           '_dataChanged(speaker)',
+          '_itemChanged(selectedItem)',
         ];
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        console.log(this.key);
+      }
+
+      _itemChanged (selectedItem) {
+        console.log(selectedItem);
       }
 
       _dataChanged (speaker) {

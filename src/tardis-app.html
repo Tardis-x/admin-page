@@ -15,11 +15,15 @@
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
 
+<link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+
+<link rel="import" href="/src/redux-store.html">
+
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="tardis-login.html">
 
-<link rel="import" href="/src/speakers/index.html">
-<link rel="import" href="/src/organizations/index.html">
+<!--<link rel="import" href="/src/speakers/index.html">
+<link rel="import" href="/src/organizations/index.html">-->
 
 <dom-module id="tardis-app">
   <template>
@@ -63,12 +67,13 @@
         background: red;
       }
     </style>
+
     <app-location route="{{route}}"></app-location>
     <app-route
-      route="{{route}}"
-      pattern="/:page"
-      data="{{routeData}}"
-      tail="{{subroute}}"></app-route>
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
 
     <template is="dom-if" if="[[!user]]">
       <tardis-login on-login="login"></tardis-login>
@@ -108,10 +113,10 @@
             </app-toolbar>
           </app-header>
 
-          <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
-            <tardis-speakers name="speakers" route="[[subroute]]"></tardis-speakers>
-            <tardis-organizations name="organizations" route="[[subroute]]"></tardis-organizations>
-          </iron-pages>
+          <iron-lazy-pages role="main" attr-for-selected="data-route" selected="[[page]]" hideImmediately="hideImmediately">
+            <tardis-speakers data-route="speakers" data-path="/src/speakers/index.html" route="[[subroute]]"></tardis-speakers>
+            <tardis-organizations data-route="organizations" data-path="/src/organizations/index.html" route="[[subroute]]"></tardis-organizations>
+          </iron-lazy-pages>
         </app-header-layout>
       </app-drawer-layout>
     </template>
@@ -128,6 +133,7 @@
           page: {
             type: String,
           },
+          rootPattern: String,
           user: {
             type: Object,
             statePath: 'auth.user',

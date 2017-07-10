@@ -159,25 +159,16 @@ const speakersActions = {
   }),
   uploadSpeakerPhoto: (key, file) => (dispatch) => {
     dispatch({ type: UPLOAD_SPEAKER_PHOTO });
-
-    console.log('Uploading fileName', file.name);
-
     const timestamp = `${Date.now()}${new Date().getUTCMilliseconds()}`;
 
-    const storageRef = firebase.storage().ref('/images/speakers/');
-    const metadata = {
-      contentType: file.type,
-      customMetadata: {
-        dbRef: `/speakers/${key}/logoUrl`,
-      },
-    };
+    const photo = 'images/speakers/' + file.name.replace(/^.*(\.[^.]*)$/, `${timestamp}$1`)
+    const storageRef = firebase.storage().ref(photo);
 
     storageRef
-      .child(file.name.replace(/^.*(\.[^.]*)$/, `${timestamp}_original$1`))
-      .put(file, metadata)
+      .put(file)
       .then(snapshot => {
-        const url = snapshot.downloadURL;
-        dispatch(speakersActions.uploadSpeakerLogoSuccess({ url }));
+        const photoUrl = snapshot.downloadURL;
+        dispatch(speakersActions.uploadSpeakerLogoSuccess({ photoUrl, photo }));
       })
       .catch(error => {
         console.error('Upload failed:', error);

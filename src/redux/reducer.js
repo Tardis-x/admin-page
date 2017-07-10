@@ -53,7 +53,7 @@ const speakersReducer = (state, action) => {
     case CREATE_SPEAKER_SUCCESS: {
       const key = action.data.key;
 
-      window.history.pushState({}, null, `/organizations/${key}`);
+      window.history.pushState({}, null, `/speakers/${key}`);
       window.dispatchEvent(new CustomEvent('location-changed'));
 
       return Object.assign({}, state, {
@@ -75,7 +75,7 @@ const speakersReducer = (state, action) => {
 
     case FETCH_SPEAKER_SUCCESS: {
       const speaker = action.data;
-      console.log(speaker);
+
       return Object.assign({}, state, {
         speaker,
         speakerFetching: false,
@@ -100,10 +100,8 @@ const speakersReducer = (state, action) => {
       return Object.assign({}, state, { speakerPhotoUploading: false });
 
     case UPLOAD_SPEAKER_PHOTO_SUCCESS: {
-      console.log(UPLOAD_SPEAKER_PHOTO_SUCCESS);
-      console.log(state.speaker);
-      const speaker = Object.assign({}, state.speaker, { photoUrl: action.data.url });
-      console.log(speaker);
+      const { photoUrl, photo } = action.data;
+      const speaker = Object.assign({}, state.speaker, { photo, photoUrl });
       return Object.assign({}, state, {
         speaker,
         speakerPhotoUploading: false

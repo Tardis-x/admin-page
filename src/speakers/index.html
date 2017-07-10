@@ -2,25 +2,20 @@
 <link rel="import" href="/bower_components/app-route/app-route.html">
 <link rel="import" href="/bower_components/iron-pages/iron-pages.html">
 
-<link rel="import" href="list.html">
-<link rel="import" href="speaker.html">
+<link rel="import" href="/bower_components/iron-lazy-pages/iron-lazy-pages.html">
 
 <dom-module id="tardis-speakers">
   <template>
     <app-route
+      active="{{routeActive}}"
       route="{{route}}"
       pattern="/:id"
       data="{{routeData}}"></app-route>
 
-    <app-route
-      route="{{route}}"
-      pattern="/"
-      data="{{routeData}}"></app-route>
-
-    <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
-      <speakers-list name="list"></speakers-list>
-      <speaker-page name="speaker" key="[[routeData.id]]"></speaker-page>
-    </iron-pages>
+    <iron-lazy-pages role="main" attr-for-selected="data-route" selected="[[page]]">
+      <speakers-list data-route="list" data-path="./list.html"></speakers-list>
+      <speaker-page data-route="speaker" data-path="./speaker.html" key="[[routeData.id]]"></speaker-page>
+    </iron-lazy-pages>
   </template>
   <script>
     class TardisSpeakers extends Polymer.Element {
@@ -44,7 +39,7 @@
 
       static get observers() {
         return [
-          '_routePageChanged(route)',
+          '_routePageChanged(routeActive)',
         ];
       }
 
@@ -52,8 +47,8 @@
         super.connectedCallback();
       }
 
-      _routePageChanged(route) {
-        this.page = this.route.path ? 'speaker' : 'list';
+      _routePageChanged(routeActive) {
+        this.page = routeActive ? 'speaker' : 'list';
       }
     }
 
