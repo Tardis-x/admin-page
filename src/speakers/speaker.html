@@ -65,38 +65,48 @@
     </div>
 
     
-      <div class="row">
-        <template is="dom-if" if="[[!isNew(key)]]">
-          <div class="photo">
-            <img height="300" src="[[data.photoUrl]]"  />
-
-            <template is="dom-if" if="[[photoUploading]]">
-              <paper-progress indeterminate></paper-progress>
-            </template>
-          </div>
-        </template>
-        <input type="file" id="photoFile" on-change="handleFile" accept="image/png,image/jpeg,image/svg+xml">
-      </div>
-    
-
     <div class="row">
-      <paper-button class="indigo" on-tap="handleChangeLogo" disabled$="[[isNew(key)]]">Change Photo</paper-button>
+      <template is="dom-if" if="[[!isNew(key)]]">
+        <div class="photo">
+          <img height="300" src="[[data.photoUrl]]"  />
+
+          <template is="dom-if" if="[[photoUploading]]">
+            <paper-progress indeterminate></paper-progress>
+          </template>
+        </div>
+      </template>
+      <input type="file" id="photoFile" on-change="handleFile" accept="image/png,image/jpeg,image/svg+xml">
     </div>
+    
+    <template is="dom-if" if="[[!isNew(key)]]">
+      <div class="row">
+        <paper-button class="indigo" on-tap="handleChangeLogo" disabled$="[[isNew(key)]]">Change Photo</paper-button>
+      </div>
+    </template>
 
     <div class="row">
       <paper-toggle-button checked="{{data.featured}}">Featured</paper-toggle-button>
     </div>
 
-    <div class="row">
-      <paper-dropdown-menu label="Company" selectedItem="{{selectedItem}}">
-        <paper-listbox slot="dropdown-content" class="dropdown-content" selected="1">
-          <paper-item>GDG Lviv</paper-item>
-          <paper-item>Another GDG Lviv</paper-item>
+    <!--<div class="row">
+      <paper-dropdown-menu label="Company" selected-item="{{selectedItem}}"  attr-for-selected="item">
+        <paper-listbox slot="dropdown-content" class="dropdown-content">
+          
+
+          <template is="dom-repeat" items="[[organizations]]">
+            <paper-item item="[[item]]">[[item.name]]</paper-item>
+          </template>
         </paper-listbox>
       </paper-dropdown-menu>
-    </div>
+    </div>-->
 
-    
+    <div class="row">
+      <select on-change="_handleCompanyChange" style="width: 50%;"> <!--value="{{data.companyKey::change}}">-->
+        <template is="dom-repeat" items="[[organizations]]">
+            <option value="[[item.$key]]" selected="[[_isEqual(item.$key, data.companyKey)]]">[[item.name]]</option>
+          </template>
+        </select>
+    </div>
 
     <div class="row">
       <paper-input label="Title" value="{{data.title}}"></paper-input>
@@ -124,10 +134,15 @@
         return {
           data: {
             type: Object,
-            value: {}
+            value: {},
+            notify: true,
           },
           key: {
             type: String
+          },
+          organizations: {
+            type: Array,
+            statePath: 'organizations.organizations'
           },
           speaker: {
             type: Object,
@@ -137,9 +152,9 @@
             type: Boolean,
             statePath: 'speakers.speakerPhotoUploading'
           },
-          selectedItem: {
-            type: Object,
-          },
+          // selectedCompanyKey: {
+          //   type: String,
+          // },
         };
       }
 
@@ -147,20 +162,23 @@
         return [
           '_keyChanged(key)',
           '_dataChanged(speaker)',
-          '_itemChanged(selectedItem)',
+          // '_itemChanged(selectedItem)',
         ];
       }
 
       connectedCallback() {
         super.connectedCallback();
-        console.log(this.key);
+        this.dispatch(organizationsActions.fetchOrganizations());
       }
 
-      _itemChanged (selectedItem) {
-        console.log(selectedItem);
-      }
+      // _itemChanged (selectedItem) {
+      //   console.log(selectedItem);
+      // }
 
       _dataChanged (speaker) {
+        if (!speaker) {
+          return;
+        }
         this.data = Object.assign({}, speaker);
         this.$.photoFile.value = null;
       }
@@ -194,6 +212,21 @@
           const file = ev.target.files[0];
           this.dispatch(speakersActions.uploadSpeakerPhoto(this.key, file));
         }
+      }
+
+      _handleCompanyChange (ev) {
+        const companyKey = ev.target.value;
+        this.set('data.companyKey', companyKey);
+        
+        if (companyKey) {
+          const company = Object.assign({}, this.organizations.find(org => org.$key === companyKey));
+          delete company.$key;
+          this.set('data.company', company);
+        }
+      }
+
+      _isEqual (a, b) {
+        return a === b;
       }
     }
 

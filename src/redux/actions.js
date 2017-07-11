@@ -60,24 +60,16 @@ const organizationsActions = {
   uploadOrganizationLogo: (key, file) => (dispatch) => {
     dispatch({ type: UPLOAD_ORGANIZATION_LOGO });
 
-    console.log('Uploading fileName', file.name);
-
     const timestamp = `${Date.now()}${new Date().getUTCMilliseconds()}`;
 
-    const storageRef = firebase.storage().ref('/images/organizations/');
-    const metadata = {
-      contentType: file.type,
-      customMetadata: {
-        dbRef: `/organizations/${key}/logoUrl`,
-      },
-    };
+    const logo = 'images/organizations/' + file.name.replace(/^.*(\.[^.]*)$/, `${timestamp}$1`)
+    const storageRef = firebase.storage().ref(logo);
 
     storageRef
-      .child(file.name.replace(/^.*(\.[^.]*)$/, `${timestamp}_original$1`))
-      .put(file, metadata)
+      .put(file)
       .then(snapshot => {
-        const url = snapshot.downloadURL;
-        dispatch(organizationsActions.uploadOrganizationLogoSuccess({ url }));
+        const logoUrl = snapshot.downloadURL;
+        dispatch(organizationsActions.uploadOrganizationLogoSuccess({ logo, logoUrl }));
       })
       .catch(error => {
         console.error('Upload failed:', error);

@@ -1,6 +1,7 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/src/redux-store.html">
 
 <dom-module id="organization-page">
@@ -114,9 +115,10 @@
       }
 
       _keyChanged (key) {
-          console.log('wtf', key);
         if (!this.isNew(key)) {
           this.dispatch(organizationsActions.fetchOrganization(key));
+        } else {
+          this.data = {};
         }
       }
 

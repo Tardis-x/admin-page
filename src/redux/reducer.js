@@ -1,10 +1,19 @@
 const organizationsReducer = (state, action) => {
   switch (action.type) {
     case FETCH_ORGANIZATIONS_SUCCESS: {
-      const organizations = Object.keys(action.data)
-        .map(key => Object.assign({}, action.data[key], {$key: key}));
+      if (action.data) {
+        const organizations = Object.keys(action.data)
+          .map(key => Object.assign({}, action.data[key], {$key: key}));
 
-      return Object.assign({}, state, {organizations});
+        return Object.assign({}, state, {organizations});  
+      } else {
+        return Object.assign({}, state, { organizations: [] });
+      }
+
+      // const organizations = Object.keys(action.data)
+      //   .map(key => Object.assign({}, action.data[key], {$key: key}));
+
+      // return Object.assign({}, state, {organizations});
     }
 
     case FETCH_ORGANIZATION:
@@ -32,7 +41,8 @@ const organizationsReducer = (state, action) => {
       return Object.assign({}, state, { organizationLogoUploading: false });
 
     case UPLOAD_ORGANIZATION_LOGO_SUCCESS: {
-      const organization = Object.assign({}, state.organization, { logoUrl: action.data.url });
+      const { logo, logoUrl } = action.data;
+      const organization = Object.assign({}, state.organization, { logo, logoUrl });
 
       return Object.assign({}, state, {
         organization,

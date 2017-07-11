@@ -1,6 +1,14 @@
 {
   "entrypoint": "index.html",
   "shell": "src/tardis-app.html",
+  "fragments": [
+    "src/speakers/index.html",
+    "src/speakers/list.html",
+    "src/speakers/speaker.html",
+    "src/organizations/index.html",
+    "src/organizations/list.html",
+    "src/organizations/organization.html"
+  ],
   "sources": [
     "src/**/*",
     "images/**/*"
