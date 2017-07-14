@@ -4,10 +4,10 @@
 <link rel="import" href="/bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="/bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
-<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="/bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="/bower_components/paper-item/paper-item.html">
 <link rel="import" href="/bower_components/neon-animation/web-animations.html">
+
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 
 <link rel="import" href="/src/redux-store.html">
 
@@ -56,6 +56,9 @@
       }
     </style>
 
+    <iron-ajax url="/data/countries.json" handle-as="json" last-response="{{response}}" loading="{{loading}}" debounce-duration="500" auto>
+    </iron-ajax>
+
     <div class="row">
       <paper-button icon="icons:save" on-tap="handleSave">Save</paper-button>
     </div>
@@ -68,7 +71,7 @@
     <div class="row">
       <template is="dom-if" if="[[!isNew(key)]]">
         <div class="photo">
-          <img height="300" src="[[data.photoUrl]]"  />
+          <img height="300" src="[[_photoUrl(data.photoUrl)]]"  />
 
           <template is="dom-if" if="[[photoUploading]]">
             <paper-progress indeterminate></paper-progress>
@@ -88,32 +91,18 @@
       <paper-toggle-button checked="{{data.featured}}">Featured</paper-toggle-button>
     </div>
 
-    <!--<div class="row">
-      <paper-dropdown-menu label="Company" selected-item="{{selectedItem}}"  attr-for-selected="item">
-        <paper-listbox slot="dropdown-content" class="dropdown-content">
-          
-
-          <template is="dom-repeat" items="[[organizations]]">
-            <paper-item item="[[item]]">[[item.name]]</paper-item>
-          </template>
-        </paper-listbox>
-      </paper-dropdown-menu>
-    </div>-->
-
     <div class="row">
-      <select on-change="_handleCompanyChange" style="width: 50%;"> <!--value="{{data.companyKey::change}}">-->
-        <template is="dom-repeat" items="[[organizations]]">
-            <option value="[[item.$key]]" selected="[[_isEqual(item.$key, data.companyKey)]]">[[item.name]]</option>
-          </template>
-        </select>
-    </div>
+      <vaadin-combo-box items="[[organizations]]" loading="[[loading]]" item-value-path="$key" item-label-path="name" value="{{data.companyKey}}">
+      </vaadin-combo-box>
+    </div> 
 
     <div class="row">
       <paper-input label="Title" value="{{data.title}}"></paper-input>
     </div>
 
     <div class="row">
-      <paper-input label="Country" value="{{data.country}}"></paper-input>
+      <vaadin-combo-box items="[[response]]" loading="[[loading]]" item-value-path="countryName" item-label-path="countryName" value="{{data.country}}">
+      </vaadin-combo-box>
     </div>
 
     <div class="row">
@@ -152,17 +141,14 @@
             type: Boolean,
             statePath: 'speakers.speakerPhotoUploading'
           },
-          // selectedCompanyKey: {
-          //   type: String,
-          // },
         };
       }
 
       static get observers() {
         return [
           '_keyChanged(key)',
-          '_dataChanged(speaker)',
-          // '_itemChanged(selectedItem)',
+          '_dataChanged(speaker, organizations)',
+          '_handleCompanyChanged(data.companyKey)',
         ];
       }
 
@@ -171,12 +157,8 @@
         this.dispatch(organizationsActions.fetchOrganizations());
       }
 
-      // _itemChanged (selectedItem) {
-      //   console.log(selectedItem);
-      // }
-
-      _dataChanged (speaker) {
-        if (!speaker) {
+      _dataChanged (speaker, organizations) {
+        if (!speaker || !organizations) {
           return;
         }
         this.data = Object.assign({}, speaker);
@@ -214,10 +196,7 @@
         }
       }
 
-      _handleCompanyChange (ev) {
-        const companyKey = ev.target.value;
-        this.set('data.companyKey', companyKey);
-        
+      _handleCompanyChanged (companyKey) {
         if (companyKey) {
           const company = Object.assign({}, this.organizations.find(org => org.$key === companyKey));
           delete company.$key;
@@ -227,6 +206,10 @@
 
       _isEqual (a, b) {
         return a === b;
+      }
+
+      _photoUrl (photoUrl) {
+        return photoUrl || '/img/no-avatar.png';
       }
     }
 
