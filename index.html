@@ -36,26 +36,9 @@
     <link rel="import" href="/bower_components/polymer-redux/polymer-redux.html">
 
     <script src="/bower_components/firebase/firebase.js"></script>
+    <script src="/app/config.js"></script>
     <script>
-      const tardisConfig = {
-        apiKey: 'AIzaSyD0pCwYa6tAe36pOBytOH9tsMrQuwjeIhQ',
-        authDomain: 'tardis-dev.firebaseapp.com',
-        databaseURL: 'https://tardis-dev.firebaseio.com',
-        projectId: 'tardis-dev',
-        storageBucket: 'tardis-dev.appspot.com',
-        messagingSenderId: '581621285133'
-      };
-      firebase.initializeApp(tardisConfig);
-
-
-//      const tardisConfig = {
-//        apiKey: "AIzaSyA5mUpukxVw8_6Q1-iB0l6LYJTO_sYUlOY",
-//        authDomain: "polymer-redux-fc2f7.firebaseapp.com",
-//        databaseURL: "https://polymer-redux-fc2f7.firebaseio.com",
-//        storageBucket: "polymer-redux-fc2f7.appspot.com",
-//        messagingSenderId: "588819120020"
-//      };
-//      firebase.initializeApp(tardisConfig, 'tardis');
+      firebase.initializeApp(config.firebase);
     </script>
 
     <link rel="import" href="/src/tardis-app.html">
