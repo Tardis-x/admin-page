@@ -31,18 +31,9 @@
     <link rel="apple-touch-icon" sizes="120x120" href="/images/manifest/ios/icon-120x120.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/images/manifest/ios/icon-152x152.png">
 
-    <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="/node_modules/redux/dist/redux.js"></script>
-    <link rel="import" href="/bower_components/polymer-redux/polymer-redux.html">
+    <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 
-    <script src="/bower_components/firebase/firebase.js"></script>
-    <script src="/app/config.js"></script>
-    <script>
-      firebase.initializeApp(config.firebase);
-    </script>
-
-    <link rel="import" href="/src/tardis-app.html">
-
+    <script type="module" src="app/tardis-app.js"></script>
     <style>
       body {
         margin: 0;
