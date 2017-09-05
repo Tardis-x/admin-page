@@ -1,6 +1,6 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/tardis-app.html",
+  "shell": "app/tardis-app.html",
   "fragments": [
     "src/speakers/index.html",
     "src/speakers/list.html",
@@ -15,8 +15,8 @@
   ],
   "extraDependencies": [
     "manifest.json",
-    "bower_components/firebase/firebase.js",
-    "bower_components/webcomponentsjs/webcomponents-lite.js",
+    "node_modules/firebase/firebase.js",
+    "node_modules/@webcomponents/webcomponentsjs/webcomponents-lite.js",
     "node_modules/redux/dist/redux.js",
     "data/**/*"
   ],

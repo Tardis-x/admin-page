@@ -6,16 +6,33 @@
   "repository": "git@github.com:Tardis-x/admin-page.git",
   "author": "Oleksandr Pidlisnyi <oleksandr.pidlisnyi@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "NODE_ENV=development webpack-dev-server --config ./build/webpack.dev.conf.js",
+    "build": "webpack --config ./build/webpack.prod.conf.js",
+    "deploy": "firebase deploy"
+  },
   "dependencies": {
     "@polymer/app-layout": "next",
     "@polymer/app-route": "next",
     "@polymer/iron-flex-layout": "next",
     "@polymer/iron-icon": "next",
+    "@polymer/iron-icons": "next",
+    "@polymer/paper-button": "next",
+    "@polymer/paper-icon-button": "next",
     "@polymer/polymer": "next",
     "@webcomponents/webcomponentsjs": "^1.0.10",
+    "compression-webpack-plugin": "^1.0.0",
     "firebase": "^4.3.0",
-    "polymer-redux": "^1.0.2",
+    "polymer-redux": "https://github.com/moebiusmania/polymer-redux",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.16",
+    "copy-webpack-plugin": "^4.0.1",
+    "html-webpack-plugin": "^2.30.1",
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1"
   }
 }
