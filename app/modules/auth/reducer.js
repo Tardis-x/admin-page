@@ -14,14 +14,13 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_SUCCESS:
       const user = action.payload;
-      // return { ...state, user };
       return Object.assign({}, state, { user });
 
     case LOGIN_FAILURE:
       const auth = action.payload;
       return Object.assign({}, state, auth);
 
-    case LOGIN_SUCCESS:
+    case LOGOUT_SUCCESS:
       return Object.assign({}, state, { user: null });
 
     default:
