@@ -16,6 +16,7 @@ import config from 'config';
 import 'shared-styles';
 
 import 'modules/auth/auth';
+import 'modules/organizations/containers/organizations-list';
 
 import ReduxMixin from 'store';
 import { selectUser } from 'modules/auth';
@@ -104,6 +105,8 @@ export class TardisApp extends ReduxMixin(PolymerElement) {
                 <span class="avatar" style="background-image: url([[user.photoURL]]);"></span>
               </app-toolbar>
             </app-header>
+
+            <organizations-list></organizations-list>
 
           </app-header-layout>
         </app-drawer-layout>

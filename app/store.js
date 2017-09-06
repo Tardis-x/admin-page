@@ -3,14 +3,9 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 
 import { reducer as authReducer } from 'modules/auth';
+import { reducer as organizationsReducer } from 'modules/organizations';
 
 const initialState = {
-  organizations: {
-    organization: null,
-    organizationLogoUploading: false,
-    organizations: [],
-    organizationsError: null,
-  },
   speakers: {
     speakers: [],
     speakersFetching: false,
@@ -22,7 +17,7 @@ const initialState = {
 const reducer = (state = {}, action) => ({
   auth: authReducer(state.auth, action),
   // speakers: speakersReducer(state.speakers, action),
-  // organizations: organizationsReducer(state.organizations, action),
+  organizations: organizationsReducer(state.organizations, action),
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
