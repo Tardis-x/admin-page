@@ -5,7 +5,10 @@ import 'paper-button/paper-button';
 
 import ReduxMixin from 'store';
 import 'shared-styles';
-import { login } from './actions';
+import {
+  initListeners,
+  login,
+} from './actions';
 
 export class TardisLogin extends ReduxMixin(PolymerElement) {
   static get template() {
@@ -40,6 +43,7 @@ export class TardisLogin extends ReduxMixin(PolymerElement) {
 
   constructor() {
     super();
+    this.dispatch(initListeners());
   }
   
   handleLogin () {
