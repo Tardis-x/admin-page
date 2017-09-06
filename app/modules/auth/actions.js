@@ -33,9 +33,7 @@ const loginSuccess = user => ({ type: LOGIN_SUCCESS, payload: user });
 
 const logout = () => (dispatch) => {
   firebase.auth().signOut()
-    .then(() => {
-      this.getCurrentUser();
-    })
+    .then(() => dispatch(logoutSuccess()))
     .catch(error => dispatch(logoutFailure(error)));
 };
 

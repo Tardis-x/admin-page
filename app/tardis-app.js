@@ -19,7 +19,10 @@ import 'modules/auth/auth';
 import 'modules/organizations/containers/organizations-list';
 
 import ReduxMixin from 'store';
-import { selectUser } from 'modules/auth';
+import {
+  logout,
+  selectUser,
+} from 'modules/auth';
 
 export class TardisApp extends ReduxMixin(PolymerElement) {
   static get template() {
@@ -130,10 +133,6 @@ export class TardisApp extends ReduxMixin(PolymerElement) {
         type: Object,
         statePath: selectUser,
       },
-      test: {
-        type: String,
-        statePath: 'auth.test',
-      }
     };
   }
 
@@ -142,7 +141,7 @@ export class TardisApp extends ReduxMixin(PolymerElement) {
   }
 
   signOut () {
-    // authActions.signOut();
+    this.dispatch(logout());
   }
 }
 
