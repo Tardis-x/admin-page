@@ -1,11 +1,7 @@
 import { Element as PolymerElement } from 'polymer/polymer-element';
 
-import 'iron-icons/iron-icons';
-import 'iron-icon/iron-icon';
 import 'paper-button/paper-button';
-import 'paper-progress/paper-progress';
 import 'paper-input/paper-input';
-import 'paper-input/paper-input-error';
 import 'paper-input/paper-textarea';
 import 'iron-form/iron-form';
 
