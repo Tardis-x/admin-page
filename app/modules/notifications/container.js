@@ -47,9 +47,19 @@ export class SendNotification extends ReduxMixin(PolymerElement) {
         .row *:last-child{
           margin-right: 0;
         }
+
+        .alert-error {
+          color: var(--error-color);
+        }
       </style>
 
-      <iron-form  id="form">
+      <template is="dom-if" if="[[sendingError]]">
+        <div class="row error">
+          <p class="alert-error">[[sendingError.code]]</p>
+        </div>
+      </template>
+
+      <iron-form id="form">
         <form>
           <div class="row">
             <paper-input

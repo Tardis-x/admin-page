@@ -16,9 +16,9 @@ const send = (data) => (dispatch) => {
     .catch(error => dispatch(sendFailure(error)));
 };
 
-const sendFailure = error => ({ type: SEND_FAILURE, payload: error });
+const sendFailure = payload => ({ type: SEND_FAILURE, payload });
 
-const sendSuccess = user => ({ type: SEND_SUCCESS, payload: user });
+const sendSuccess = payload => ({ type: SEND_SUCCESS, payload });
 
 export {
   send,
