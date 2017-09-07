@@ -38,10 +38,6 @@ export class Organizations extends PolymerElement {
     ];
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-  }
-
   _routePageChanged(routeActive) {
     this.page = routeActive ? 'organization' : 'list';
   }
