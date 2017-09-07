@@ -3,6 +3,7 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 
 import { reducer as authReducer } from 'modules/auth';
+import { reducer as notificationsReducer } from 'modules/notifications';
 import { reducer as organizationsReducer } from 'modules/organizations';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
 
 const reducer = combineReducers({
   auth: authReducer,
+  notifications: notificationsReducer,
   organizations: organizationsReducer,
 });
 
