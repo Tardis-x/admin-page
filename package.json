@@ -15,6 +15,7 @@
     "@polymer/app-layout": "next",
     "@polymer/app-route": "next",
     "@polymer/iron-flex-layout": "next",
+    "@polymer/iron-form": "next",
     "@polymer/iron-icon": "next",
     "@polymer/iron-icons": "next",
     "@polymer/iron-pages": "next",

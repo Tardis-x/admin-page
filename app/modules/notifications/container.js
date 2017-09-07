@@ -5,7 +5,9 @@ import 'iron-icon/iron-icon';
 import 'paper-button/paper-button';
 import 'paper-progress/paper-progress';
 import 'paper-input/paper-input';
+import 'paper-input/paper-input-error';
 import 'paper-input/paper-textarea';
+import 'iron-form/iron-form';
 
 import ReduxMixin from 'store';
 import 'shared-styles';
@@ -47,24 +49,50 @@ export class SendNotification extends ReduxMixin(PolymerElement) {
         }
       </style>
 
-      <div class="row">
-        <paper-input label="Title" value="{{title}}"></paper-input>
-      </div>
+      <iron-form  id="form">
+        <form>
+          <div class="row">
+            <paper-input
+              auto-validate
+              error-message="Notification title is required"
+              label="Title"
+              name="title"
+              required
+            />
+          </div>
 
-      <div class="row">
-        <paper-textarea label="Message" value="{{body}}"></paper-textarea>
-      </div>
+          <div class="row">
+            <paper-textarea
+              auto-validate
+              error-message="Notification message is required"
+              label="Message"
+              name="body"
+              required
+            />
+          </div>
 
-      <div class="row">
-        <paper-button class="indigo" on-tap="handleSend" disabled$="[[sending]]">Send</paper-button>
-      </div>
+          <div class="row">
+            <paper-input label="Click Action" name="clickAction" />
+          </div>
+
+          <div class="row">
+            <paper-input label="Icon" name="icon" />
+          </div>
+
+          <div class="row">
+            <paper-button class="indigo" on-tap="handleSend" disabled$="[[sending]]">Send</paper-button>
+          </div>
+        </form>
+      </iron-form>
     `;
   }
 
   static get properties() {
     return {
-      title: String,
       body: String,
+      clickAction: String,
+      title: String,
+
       sending: {
         type: Boolean,
         statePath: selectSending,
@@ -76,8 +104,21 @@ export class SendNotification extends ReduxMixin(PolymerElement) {
   }
 
   handleSend () {
-    const { body, title } = this;
-    this.dispatch(send({ body, title }));
+    const form = this.$.form;
+    if (form.validate()) {
+      const { body, clickAction, icon, title } = form.serializeForm();
+      const notification = { body, title };
+
+      if (clickAction) {
+        notification.clickAction = clickAction;
+      }
+
+      if (icon) {
+        notification.icon = icon;
+      }
+
+      this.dispatch(send(notification));
+    }
   }
 }
 
