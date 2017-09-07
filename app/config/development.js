@@ -1,11 +1,11 @@
 const config = {
   firebase: {
-    apiKey: 'AIzaSyD8iuE0X2JIPbKVHqgTTli1eM3Z7Ovj61A',
-    authDomain: 'tardis-tst-hoverboard.firebaseapp.com',
-    databaseURL: 'https://tardis-tst-hoverboard.firebaseio.com',
-    projectId: 'tardis-tst-hoverboard',
-    storageBucket: 'tardis-tst-hoverboard.appspot.com',
-    messagingSenderId: '1089999606283'
+    apiKey: 'AIzaSyCsXIExz25SRWDT0b_1hsdq-AjQTcPs5Fw',
+    authDomain: 'tardis-exp.firebaseapp.com',
+    databaseURL: 'https://tardis-exp.firebaseio.com',
+    projectId: 'tardis-exp',
+    storageBucket: 'tardis-exp.appspot.com',
+    messagingSenderId: '1015923519552'
   },
 };
 

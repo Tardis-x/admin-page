@@ -10,12 +10,14 @@ import 'app-layout/app-header/app-header';
 import 'app-layout/app-header-layout/app-header-layout';
 import 'app-layout/app-toolbar/app-toolbar';
 import 'iron-icons/iron-icons';
+import 'iron-pages/iron-pages';
 import 'paper-icon-button/paper-icon-button';
 
 import config from 'config';
 import 'shared-styles';
 
 import 'modules/auth/auth';
+import 'modules/organizations/container';
 
 import ReduxMixin from 'store';
 import {
@@ -107,7 +109,9 @@ export class TardisApp extends ReduxMixin(PolymerElement) {
                 <span class="avatar" style="background-image: url([[user.photoURL]]);"></span>
               </app-toolbar>
             </app-header>
-
+            <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
+              <tardis-organizations name="organizations" route="[[subroute]]"></tardis-organizations>
+            </iron-pages>
           </app-header-layout>
         </app-drawer-layout>
       </template>
@@ -131,6 +135,16 @@ export class TardisApp extends ReduxMixin(PolymerElement) {
         statePath: selectUser,
       },
     };
+  }
+
+  static get observers() {
+    return [
+      '_routePageChanged(routeData.page)',
+    ];
+  }
+
+  _routePageChanged(page) {
+    this.page = page || 'organizations';
   }
 
   computeLockIcon() {
