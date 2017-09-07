@@ -18,6 +18,7 @@ import 'shared-styles';
 
 import 'modules/auth/auth';
 import 'modules/organizations/container';
+import 'modules/notifications/container';
 
 import ReduxMixin from 'store';
 import {
@@ -92,6 +93,7 @@ export class TardisApp extends ReduxMixin(PolymerElement) {
               <!--<a href="/voter/results">Results</a>-->
               <a href="/speakers" name="speakers">Speakers</a>
               <a href="/organizations" name="organizations">Organizations</a>
+              <a href="/notifications" name="notifications">Send Notification</a>
             </iron-selector>
 
           </app-drawer>
@@ -111,6 +113,7 @@ export class TardisApp extends ReduxMixin(PolymerElement) {
             </app-header>
             <iron-pages role="main" attr-for-selected="name" selected="[[page]]">
               <tardis-organizations name="organizations" route="[[subroute]]"></tardis-organizations>
+              <tardis-send-notification name="notifications"></tardis-send-notification>
             </iron-pages>
           </app-header-layout>
         </app-drawer-layout>
