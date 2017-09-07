@@ -3,9 +3,9 @@ import {
   FETCH_ORGANIZATION,
   FETCH_ORGANIZATION_SUCCESS,
   UPDATE_ORGANIZATION_SUCCESS,
-  UPLOAD_ORGANIZATION_LOGO,
-  UPLOAD_ORGANIZATION_LOGO_FAILURE,
-  UPLOAD_ORGANIZATION_LOGO_SUCCESS,
+  UPLOAD_LOGO,
+  UPLOAD_LOGO_FAILURE,
+  UPLOAD_LOGO_SUCCESS,
   FETCH_ORGANIZATIONS_SUCCESS,
 } from './constants';
 
@@ -19,7 +19,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case CREATE_ORGANIZATION_SUCCESS: {
-      const key = action.data.key;
+      const key = action.payload.key;
 
       window.history.pushState({}, null, `/organizations/${key}`);
       window.dispatchEvent(new CustomEvent('location-changed'));
@@ -50,18 +50,18 @@ const reducer = (state = initialState, action) => {
 
     case FETCH_ORGANIZATION_SUCCESS:
     case UPDATE_ORGANIZATION_SUCCESS: {
-      const organization = action.data;
+      const organization = action.payload;
       return Object.assign({}, state, { organization });
     }
 
-    case UPLOAD_ORGANIZATION_LOGO:
+    case UPLOAD_LOGO:
       return Object.assign({}, state, { organizationLogoUploading: true });
 
-    case UPLOAD_ORGANIZATION_LOGO_FAILURE:
+    case UPLOAD_LOGO_FAILURE:
       return Object.assign({}, state, { organizationLogoUploading: false });
 
-    case UPLOAD_ORGANIZATION_LOGO_SUCCESS: {
-      const { logo, logoUrl } = action.data;
+    case UPLOAD_LOGO_SUCCESS: {
+      const { logo, logoUrl } = action.payload;
       const organization = Object.assign({}, state.organization, { logo, logoUrl });
 
       return Object.assign({}, state, {

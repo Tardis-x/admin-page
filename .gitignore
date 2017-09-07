@@ -4,3 +4,4 @@ bower_components
 .idea
 firebase-debug.log
 yarn-error.log
+dist

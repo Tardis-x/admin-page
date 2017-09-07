@@ -1,5 +1,5 @@
 import PolymerRedux from 'polymer-redux/src';
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 
 import { reducer as authReducer } from 'modules/auth';
@@ -14,10 +14,9 @@ const initialState = {
   },
 };
 
-const reducer = (state = {}, action) => ({
-  auth: authReducer(state.auth, action),
-  // speakers: speakersReducer(state.speakers, action),
-  organizations: organizationsReducer(state.organizations, action),
+const reducer = combineReducers({
+  auth: authReducer,
+  organizations: organizationsReducer,
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

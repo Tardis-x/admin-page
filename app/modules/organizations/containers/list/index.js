@@ -2,9 +2,10 @@ import { Element as PolymerElement } from 'polymer/polymer-element';
 
 import 'iron-flex-layout/iron-flex-layout-classes';
 
-import 'iron-icons/iron-icons';
+import 'iron-icons/editor-icons';
 import 'iron-icon/iron-icon';
-import 'paper-button/paper-button';
+
+import 'paper-fab/paper-fab';
 
 import ReduxMixin from 'store';
 import 'shared-styles';
@@ -87,6 +88,7 @@ export class OrganizationsList extends ReduxMixin(PolymerElement) {
           </div>
         </div>
       </template>
+      <paper-fab icon="add" on-tap="handleNew"></paper-fab>
     `;
   }
 

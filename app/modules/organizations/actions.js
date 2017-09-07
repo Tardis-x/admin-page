@@ -10,8 +10,11 @@ import {
   FETCH_ORGANIZATIONS,
   FETCH_ORGANIZATIONS_FAILURE,
   FETCH_ORGANIZATIONS_SUCCESS,
-  UPLOAD_ORGANIZATION_LOGO,
-  UPLOAD_ORGANIZATION_LOGO_FAILURE,
+  UPLOAD_LOGO,
+  UPLOAD_LOGO_FAILURE,
+  UPLOAD_LOGO_SUCCESS,
+  UPDATE_ORGANIZATION,
+  UPDATE_ORGANIZATION_FAILURE,
   UPDATE_ORGANIZATION_SUCCESS,
 } from './constants';
 
@@ -45,10 +48,7 @@ const fetchOrganization = (key) => (dispatch) => {
   dispatch({ type: FETCH_ORGANIZATION });
 
   return firebase.database().ref(`/organizations/${key}`).once('value', snapshot => {
-    dispatch({
-      type: FETCH_ORGANIZATION_SUCCESS,
-      data: snapshot.val()
-    });
+    dispatch(fetchOrganizationSuccess(snapshot.val()));
   });
 };
 
@@ -74,8 +74,8 @@ const updateOrganizationFailure = payload => ({ type: UPDATE_ORGANIZATION_FAILUR
 
 const updateOrganizationSuccess = payload => ({ type: UPDATE_ORGANIZATION_SUCCESS, payload });
   
-const uploadOrganizationLogo = (key, file) => (dispatch) => {
-  dispatch({ type: UPLOAD_ORGANIZATION_LOGO });
+const uploadLogo = (key, file) => (dispatch) => {
+  dispatch({ type: UPLOAD_LOGO });
 
   const timestamp = `${Date.now()}${new Date().getUTCMilliseconds()}`;
 
@@ -86,17 +86,17 @@ const uploadOrganizationLogo = (key, file) => (dispatch) => {
     .put(file)
     .then(snapshot => {
       const logoUrl = snapshot.downloadURL;
-      dispatch(uploadOrganizationLogoSuccess({ logo, logoUrl }));
+      dispatch(uploadLogoSuccess({ logo, logoUrl }));
     })
     .catch(error => {
       console.error('Upload failed:', error);
-      dispatch(uploadOrganizationLogoFailure(error));
+      dispatch(uploadLogoFailure(error));
     });
 };
 
-const uploadOrganizationLogoFailure = payload => ({ type: UPLOAD_ORGANIZATION_LOGO_FAILURE, payload });
+const uploadLogoFailure = payload => ({ type: UPLOAD_LOGO_FAILURE, payload });
 
-const uploadOrganizationLogoSuccess = payload => ({ type: UPLOAD_ORGANIZATION_LOGO_SUCCESS, payload });
+const uploadLogoSuccess = payload => ({ type: UPLOAD_LOGO_SUCCESS, payload });
 
 export {
   createOrganization,
@@ -111,7 +111,7 @@ export {
   updateOrganization,
   updateOrganizationFailure,
   updateOrganizationSuccess,
-  uploadOrganizationLogo,
-  uploadOrganizationLogoFailure,
-  uploadOrganizationLogoSuccess,
+  uploadLogo,
+  uploadLogoFailure,
+  uploadLogoSuccess,
 }

@@ -7,6 +7,11 @@ const selectOrganization = createSelector(
   substate => substate.organization
 );
 
+const selectOrganizationLogoUploading = createSelector(
+  selectDomain(),
+  substate => substate.organizationLogoUploading
+);
+
 const selectOrganizations = createSelector(
   selectDomain(),
   substate => substate.organizations
@@ -14,5 +19,6 @@ const selectOrganizations = createSelector(
 
 export { 
   selectOrganization,
+  selectOrganizationLogoUploading,
   selectOrganizations,
 };
